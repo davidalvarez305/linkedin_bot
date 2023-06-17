@@ -1,13 +1,11 @@
 import os
 from time import sleep
-from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
-from list import NO_APPLICATION_QUESTIONS, YES_APPLICATION_QUESTIONS
-
+from ..list import NO_APPLICATION_QUESTIONS, YES_APPLICATION_QUESTIONS
 
 def click_hidden_button(driver, btn_xpath):
     try:

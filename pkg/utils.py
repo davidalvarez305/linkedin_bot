@@ -1,6 +1,5 @@
 from time import sleep
 from selenium.webdriver.common.by import By
-from list import COMMON_QUESTIONS
 from selenium.webdriver.common.keys import Keys
 
 def complete_prompt():
@@ -87,4 +86,3 @@ def handle_calendar_select(driver, user_data):
         if user_data in el.get_attribute('textContent'):
             el.click()
             return
-        

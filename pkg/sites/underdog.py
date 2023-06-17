@@ -2,7 +2,7 @@ import os
 from time import sleep
 from selenium.webdriver.common.by import By
 
-from utils import complete_prompt
+from ..utils import complete_prompt
 
 def auto_complete(driver, tag):
     hidden_input = driver.find_element(By.TAG_NAME, tag)

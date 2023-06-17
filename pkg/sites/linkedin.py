@@ -2,14 +2,10 @@ from lib2to3.pytree import Base
 import os
 from random import uniform
 from time import sleep
-from dotenv import load_dotenv
-from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-
-from site_router import site_router
-
+from selenium.webdriver.remote.webdriver import WebElement, WebDriver
 
 def login(driver):
     # Get Input Fields
@@ -24,17 +20,14 @@ def login(driver):
     sleep(1)
     password_input.send_keys(Keys.RETURN)
 
-
 def simulate_typing(element, txt):
     for letter in txt:
         sleep(uniform(0.0250, 0.25))
         element.send_keys(letter)
 
-
 def find_jobs_button(driver):
     try:
-        filters = driver.find_elements(
-            By.XPATH, '//*[@class="search-reusables__primary-filter"]')
+        filters = driver.find_elements(By.XPATH, '//*[@class="search-reusables__primary-filter"]')
 
         for filter in filters:
             btn = filter.find_element(By.TAG_NAME, 'button')
@@ -44,12 +37,11 @@ def find_jobs_button(driver):
         input("Press enter after looking up jobs: ")
         pass
 
-
-def go_to_jobs_search(driver, data):
+def go_to_jobs_search(driver, keywords):
     try:
         search_input = driver.find_element(
             By.XPATH, '//input[@placeholder="Search"]')
-        search_input.send_keys(data['keywords'])
+        search_input.send_keys(keywords)
         search_input.send_keys(Keys.RETURN)
         sleep(4)
         find_jobs_button(driver)
@@ -57,75 +49,42 @@ def go_to_jobs_search(driver, data):
         input("Press enter after looking up jobs: ")
         pass
 
+def extract_job_data(web_element: WebElement, driver: WebDriver):
+    data = {}
 
-def handle_job(driver, data, values):
-    try:
-        print("Handling job...")
-        job_details = driver.find_element(By.CLASS_NAME, 'jobs-details')
-        buttons = job_details.find_elements(By.TAG_NAME, 'button')
+    # Click to open right-side card
+    web_element.click()
 
-        for button in buttons:
-            if "Apply" in button.get_attribute('innerText'):
-                button.click()
+    # Company Name
+    company_name_card = web_element.find_element(By.CLASS_NAME, 'jobs-unified-top-card__company-name')
+    company_name = company_name_card.find_element(By.TAG_NAME, 'a')
 
-        sleep(5)
+    # Title
+    job_title = web_element.find_element(By.XPATH, './/h2[@class="t-24 t-bold jobs-unified-top-card__job-title"]')
 
-        # Switch Tab & Fill Fields
-        driver.switch_to.window(driver.window_handles[1])
-        data['url'] = driver.current_url
-
-        site_router(driver=driver, data=data, values=values)
-
-        driver.close()
-        driver.switch_to.window(driver.window_handles[0])
-    except BaseException:
-        pass
-
-
-def handle_jobs(driver, data, values):
-    jobs = driver.find_elements(
-        By.XPATH, '//a[@class="disabled ember-view job-card-container__link job-card-list__title"]')
-
-    for job in jobs:
-        try:
-            print('Running job...')
-            job.click()
-            handle_job(driver=driver, data=data, values=values)
-        except BaseException:
-            input("Press enter to move on to next job: ")
-            continue
-
-
-def handle_linkedin(driver, data, values):
-
-    # Attempt to Login
-    # login(driver)
-    input("Press enter after logging in: ")
-
-    # Access Job Search
-    go_to_jobs_search(driver=driver, data=data)
-
+    # Link
+    apply_button = web_element.find_element(By.XPATH, './/button[@class="jobs-apply-button artdeco-button artdeco-button--icon-right artdeco-button--3 artdeco-button--primary ember-view"]')
+    apply_button.click()
     sleep(5)
-    current_page = 1
 
-    while (current_page < 40):
-        pages_list = driver.find_element(
-            By.XPATH, '//ul[@class="artdeco-pagination__pages artdeco-pagination__pages--number"]')
+    # Get link from newly open window, then close it.
+    driver.switch_to.window(driver.window_handles[1])
+    job_apply_url = driver.current_url
+    driver.close()
+    driver.switch_to.window(driver.window_handles[0])
 
-        pg_buttons = pages_list.find_elements(
-            By.XPATH, './/li[@class="artdeco-pagination__indicator artdeco-pagination__indicator--number ember-view"]')
+    # Salary
+    salary_card = web_element.find_element(By.CLASS_NAME, 'app-aware-link ')
 
-        try:
-            handle_jobs(driver=driver, data=data, values=values)
-            for index, btn in enumerate(pg_buttons):
-                if int(btn.get_attribute('data-test-pagination-page-btn')) == current_page + 1:
-                    btn.click()
-                    sleep(5)
-        except BaseException as err:
-            # Only click the tree dots if the previous index was not one, otherwise, we'll keep circling back.
-            if "int() argument must be a string" in err.__str__() and int(pg_buttons[index - 1].get_attribute('data-test-pagination-page-btn')) != 1:
-                btn.click()
-                sleep(5)
-            continue
-        finally:
-            current_page += 1
+    # Location
+    location_card = web_element.find_element(By.XPATH, './/span[@class="jobs-unified-top-card__workplace-type"]')
+
+    data['title'] = job_title.get_attribute('textContent')
+    data['link'] = job_apply_url
+    data['salary'] = salary_card.get_attribute('textContent')
+    data['company'] = company_name.get_attribute('textContent')
+    data['location'] = location_card.get_attribute('textContent')
+
+    print('data: ', data)
+
+    return data

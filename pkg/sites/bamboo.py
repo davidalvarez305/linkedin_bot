@@ -1,5 +1,5 @@
-from list import COMMON_QUESTIONS
-from utils import complete_prompt, handle_textarea
+from ..list import COMMON_QUESTIONS
+from ..utils import complete_prompt, handle_textarea
 from selenium.webdriver.common.by import By
 
 

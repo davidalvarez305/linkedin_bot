@@ -1,7 +1,7 @@
 import os
 from time import sleep
 from selenium.webdriver.common.by import By
-from utils import complete_prompt, find_fields_by_label
+from .utils import complete_prompt, find_fields_by_label
 
 def get_element(element, values):
     attributes = ['id', 'name', 'class']

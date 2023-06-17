@@ -3,7 +3,7 @@ import os
 from time import sleep
 from selenium.webdriver.common.by import By
 
-from utils import complete_prompt, handle_calendar_select, handle_smart_autocomplete_fields
+from ..utils import complete_prompt, handle_calendar_select, handle_smart_autocomplete_fields
 
 def upload_smartrecruiters_resume(driver):
     resume_upload = driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')

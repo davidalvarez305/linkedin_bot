@@ -1,1 +1,1 @@
-Utils:
+.\env\Scripts\activate

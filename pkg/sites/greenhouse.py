@@ -1,6 +1,6 @@
 import os
 from time import sleep
-from utils import complete_prompt, field_match, find_fields_by_label, handle_input_field, handle_select_child_options
+from ..utils import complete_prompt, field_match, find_fields_by_label, handle_input_field, handle_select_child_options
 from selenium.webdriver.common.by import By
 
 def handle_greenhouse_autocomplete(driver, data, field_name):
