@@ -89,18 +89,19 @@ class Bot:
                 current_page += 1
 
     def apply_to_jobs(self):
+
+        if len(self.jobs) == 0:
+            raise Exception("There are no jobs to apply for.")
+
         for job in self.jobs:
             if "workdayjobs" in job['link']:
                 handle_workdayjobs(driver=self.driver, data=self.data)
                 return
-
             if "bamboohr" in job['link']:
                 click_preapplication_button(driver=self.driver)
                 bamboo(driver=self.driver, data=self.data)
-
             if "smartrecruiters" in job['link']:
                 upload_smartrecruiters_resume(driver=self.driver)
-
             try:
                 if "greenhouse" in job['link']:
                     greenhouse(driver=self.driver, data=self.data, values=self.values)
