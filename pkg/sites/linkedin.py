@@ -54,6 +54,7 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
 
     # Click to open right-side card
     web_element.click()
+    sleep(1)
 
     # Company Name
     company_name_card = web_element.find_element(By.CLASS_NAME, 'jobs-unified-top-card__company-name')

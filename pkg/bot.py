@@ -73,8 +73,13 @@ class Bot:
                 jobs = jobs_container.find_elements(By.TAG_NAME, 'li')
 
                 for job in jobs:
-                    job_data = extract_job_data(web_element=job, driver=self.driver)
-                    self.jobs.append(job_data)
+                    try:
+                        job_data = extract_job_data(web_element=job, driver=self.driver)
+                        self.jobs.append(job_data)
+                    except BaseException as err:
+                        print("ERROR FINDING JOB: ", err)
+                    finally:
+                        continue
 
                 for index, btn in enumerate(pg_buttons):
                     if int(btn.get_attribute('data-test-pagination-page-btn')) == current_page + 1:
