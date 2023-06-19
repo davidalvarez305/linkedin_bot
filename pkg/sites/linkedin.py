@@ -74,10 +74,10 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
     driver.switch_to.window(driver.window_handles[0])
 
     # Salary
-    salary_card = web_element.find_element(By.CLASS_NAME, 'app-aware-link ')
+    salary_card = web_element.find_element(By.XPATH, '//a[@href="#SALARY"]')
 
     # Location
-    location_card = web_element.find_element(By.CSS_SELECTOR, 'span.jobs-unified-top-card__workplace-type')
+    location_card = web_element.find_element(By.XPATH, '//span[@class="jobs-unified-top-card__workplace-type"]')
 
     data['title'] = job_title.get_attribute('textContent')
     data['link'] = job_apply_url

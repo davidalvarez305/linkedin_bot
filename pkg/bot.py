@@ -71,6 +71,11 @@ class Bot:
                 jobs = jobs_container.find_elements(By.TAG_NAME, 'li')
 
                 for job in jobs:
+                    
+                    # Only the links with the following attribute are job listings -> so if it's not found, skip
+                    if job.get_attribute('data-occludable-job-id') is None:
+                        continue
+
                     try:
                         job_data = extract_job_data(web_element=job, driver=self.driver)
                         self.jobs.append(job_data)
