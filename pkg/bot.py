@@ -51,9 +51,7 @@ class Bot:
 
     def get_jobs(self):
         # Initialize Driver
-        options = Options()
-        options.add_argument(f"user-agent={os.environ.get('USER_AGENT')}")
-        self.driver = webdriver.Firefox(options=options)
+        self.driver = webdriver.Firefox()
         self.driver.get("https://www.linkedin.com/login")
 
         input("Press enter after logging in: ")

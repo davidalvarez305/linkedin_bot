@@ -57,14 +57,14 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
     sleep(1)
 
     # Company Name
-    company_name_card = web_element.find_element(By.CLASS_NAME, 'jobs-unified-top-card__company-name')
+    company_name_card = web_element.find_element(By.CSS_SELECTOR, 'ul.jobs-unified-top-card__company-name')
     company_name = company_name_card.find_element(By.TAG_NAME, 'a')
 
     # Title
-    job_title = web_element.find_element(By.XPATH, './/h2[@class="t-24 t-bold jobs-unified-top-card__job-title"]')
+    job_title = web_element.find_element(By.CSS_SELECTOR, 'h2.t-24.t-bold.jobs-unified-top-card__job-title')
 
     # Link
-    apply_button = web_element.find_element(By.XPATH, './/button[@class="jobs-apply-button artdeco-button artdeco-button--icon-right artdeco-button--3 artdeco-button--primary ember-view"]')
+    apply_button = web_element.find_element(By.CSS_SELECTOR, 'button.jobs-apply-button.artdeco-button.artdeco-button--icon-right.artdeco-button--3.artdeco-button--primary.ember-view')
     apply_button.click()
     sleep(5)
 
@@ -78,7 +78,7 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
     salary_card = web_element.find_element(By.CLASS_NAME, 'app-aware-link ')
 
     # Location
-    location_card = web_element.find_element(By.XPATH, './/span[@class="jobs-unified-top-card__workplace-type"]')
+    location_card = web_element.find_element(By.CSS_SELECTOR, 'span.jobs-unified-top-card__workplace-type')
 
     data['title'] = job_title.get_attribute('textContent')
     data['link'] = job_apply_url
