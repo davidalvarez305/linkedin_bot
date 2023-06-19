@@ -66,14 +66,14 @@ class Bot:
 
         while (current_page < 40):
             try:
-                pages_list = self.driver.find_element(By.ID, 'ember628')
+                pages_list = self.driver.find_element(By.CSS_SELECTOR, 'ul.artdeco-pagination__pages.artdeco-pagination__pages--number')
                 pg_buttons = pages_list.find_elements(By.TAG_NAME, 'li')
 
                 jobs_container = self.driver.find_element(By.CLASS_NAME, 'scaffold-layout__list-container')
                 jobs = jobs_container.find_elements(By.TAG_NAME, 'li')
 
                 for job in jobs:
-                    job_data = extract_job_data(job)
+                    job_data = extract_job_data(web_element=job, driver=self.driver)
                     self.jobs.append(job_data)
 
                 for index, btn in enumerate(pg_buttons):
