@@ -57,8 +57,7 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
     sleep(1)
 
     # Company Name
-    company_name_card = web_element.find_element(By.CSS_SELECTOR, 'ul.jobs-unified-top-card__company-name')
-    company_name = company_name_card.find_element(By.TAG_NAME, 'a')
+    company_name_card = web_element.find_element(By.CSS_SELECTOR, 'a.ember-view.t-black.t-normal')
 
     # Title
     job_title = web_element.find_element(By.CSS_SELECTOR, 'h2.t-24.t-bold.jobs-unified-top-card__job-title')
@@ -83,7 +82,7 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
     data['title'] = job_title.get_attribute('textContent')
     data['link'] = job_apply_url
     data['salary'] = salary_card.get_attribute('textContent')
-    data['company'] = company_name.get_attribute('textContent')
+    data['company'] = company_name_card.get_attribute('textContent')
     data['location'] = location_card.get_attribute('textContent')
 
     print('data: ', data)
