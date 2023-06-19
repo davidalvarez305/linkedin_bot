@@ -68,11 +68,7 @@ class Bot:
             try:
                 pages_list = self.driver.find_element(By.ID, 'ember628')
                 pg_buttons = pages_list.find_elements(By.TAG_NAME, 'li')
-            except BaseException as err:
-                print('ERROR WHILE FINDING JOBS: ', err)
-                raise Exception(err)
 
-            try:
                 jobs_container = self.driver.find_element(By.CLASS_NAME, 'scaffold-layout__list-container')
                 jobs = jobs_container.find_elements(By.TAG_NAME, 'li')
 
@@ -89,9 +85,11 @@ class Bot:
                 if "int() argument must be a string" in err.__str__() and int(pg_buttons[index - 1].get_attribute('data-test-pagination-page-btn')) != 1:
                     btn.click()
                     sleep(5)
-                continue
+                else:
+                    print(err)
             finally:
                 current_page += 1
+                continue
 
     def apply_to_jobs(self):
 
