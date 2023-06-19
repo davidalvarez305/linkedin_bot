@@ -1,7 +1,9 @@
 import sys
 from pkg.bot import Bot
+from dotenv import load_dotenv
 
 def main():
+    load_dotenv()
     if "-k" in sys.argv:
         index = sys.argv.index("-k")
         

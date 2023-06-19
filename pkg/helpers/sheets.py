@@ -1,7 +1,7 @@
 import os
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from helpers.auth import get_auth
+from .auth import get_auth
 
 def get_values(spreadsheet_id, range):
     try:

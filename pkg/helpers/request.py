@@ -10,7 +10,7 @@ def get_token():
     load_dotenv()
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
-    client_secrets_file = os.environ.get('SECRETS_FILE')
+    client_secrets_file = os.path.join(os.path.abspath('../../'), os.environ.get('SECRETS_FILE'))
 
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         client_secrets_file, scopes)

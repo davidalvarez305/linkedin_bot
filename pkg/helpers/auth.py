@@ -2,10 +2,9 @@ import json
 import os
 import requests
 from oauth2client.client import OAuth2Credentials
-from os.path import abspath
 
 def get_auth():
-    f = open(abspath('./helpers/' + os.environ.get('SECRETS_FILE')))
+    f = open(os.path.join(os.getcwd(), os.environ.get('SECRETS_FILE')))
     data = json.load(f)
 
     client_id = data['web']['client_id']
