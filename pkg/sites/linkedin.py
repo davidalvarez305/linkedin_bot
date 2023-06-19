@@ -62,6 +62,12 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
     # Title
     job_title = web_element.find_element(By.XPATH, '//h2[@class="t-24 t-bold jobs-unified-top-card__job-title"]')
 
+    # Salary
+    salary_card = web_element.find_element(By.XPATH, '//a[@href="#SALARY"]')
+
+    # Location
+    location_card = web_element.find_element(By.XPATH, '//span[@class="jobs-unified-top-card__workplace-type"]')
+
     # Link
     apply_button = web_element.find_element(By.XPATH, '//button[@class="jobs-apply-button artdeco-button artdeco-button--icon-right artdeco-button--3 artdeco-button--primary ember-view"]')
     apply_button.click()
@@ -73,17 +79,11 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
 
-    # Salary
-    salary_card = web_element.find_element(By.XPATH, '//a[@href="#SALARY"]')
-
-    # Location
-    location_card = web_element.find_element(By.XPATH, '//span[@class="jobs-unified-top-card__workplace-type"]')
-
-    data['title'] = job_title.get_attribute('textContent')
-    data['link'] = job_apply_url
-    data['salary'] = salary_card.get_attribute('textContent')
-    data['company'] = company_name_card.get_attribute('textContent')
-    data['location'] = location_card.get_attribute('textContent')
+    data['title'] = job_title.get_attribute('textContent').strip()
+    data['link'] = job_apply_url.strip()
+    data['salary'] = salary_card.get_attribute('textContent').strip()
+    data['company'] = company_name_card.get_attribute('textContent').strip()
+    data['location'] = location_card.get_attribute('textContent').strip()
 
     print('data: ', data)
 
