@@ -76,7 +76,7 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
             'search_string': '//span[@class="jobs-unified-top-card__workplace-type"]',
         },
         {
-            'card': 'appply',
+            'card': 'apply',
             'by': By.XPATH,
             'search_string': '//button[@class="jobs-apply-button artdeco-button artdeco-button--icon-right artdeco-button--3 artdeco-button--primary ember-view"]',
         },
@@ -104,6 +104,9 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
         except BaseException as err:
             print("FAILED CRAWLING ELEMENT: ", err)
             continue
+        finally:
+            if job_data.get(card['card']) == None:
+                job_data[card['card']] = ""
 
     print('data: ', job_data)
 
