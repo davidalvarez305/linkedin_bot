@@ -5,7 +5,7 @@ import json
 from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from. helpers.sheets import get_values
+from. helpers.sheets import get_values, write_values
 
 from .sites.linkedin import extract_job_data, go_to_jobs_search
 from .handle_fields import enter_fields
@@ -97,6 +97,11 @@ class Bot:
                     print(err)
             finally:
                 current_page += 1
+
+                self.save_jobs()
+
+                # After jobs are saved in Google Sheets -> reset the list so that they're not saved twice
+                self.jobs = []
                 continue
 
     def apply_to_jobs(self):
@@ -126,3 +131,18 @@ class Bot:
                     enter_fields(self.driver, self.values, self.data)
             except BaseException:
                 continue
+
+    def save_jobs(self):
+        rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('JOBS_TAB')}!A2:E")
+        headers = rows[0]
+
+        jobs = []
+        for job in self.jobs:
+            job_data = []
+            for header in headers:
+                job_data.append(job[header])
+
+            jobs.append(job_data)
+        rows += jobs
+
+        write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A2:E", values=rows)
