@@ -31,10 +31,10 @@ def read_data_from_json():
         return None
 
 class Bot:
-    def __init__(self, keywords):
+    def __init__(self):
         self.jobs = []
         self.values = []
-        self.keywords = keywords
+        self.keywords = []
         self.data = read_data_from_json()
 
         # Get Spreadsheet Values
@@ -45,11 +45,7 @@ class Bot:
         if self.data is None:
             raise Exception("Data from JSON file could not be loaded.")
 
-        # Ensure that keywords were provided from CLI
-        if self.keywords == "":
-            raise Exception("No keywords were provided during initialization.")
-
-    def crawl_jobs(self):
+    def crawl_jobs(self, keyword):
         # Initialize Driver
         self.driver = webdriver.Firefox()
         self.driver.get("https://www.linkedin.com/login")
@@ -57,7 +53,7 @@ class Bot:
         input("Press enter after logging in: ")
 
         # Access Job Search
-        go_to_jobs_search(driver=self.driver, keywords=self.keywords)
+        go_to_jobs_search(driver=self.driver, keyword=keyword)
 
         sleep(5)
         current_page = 1
@@ -148,7 +144,7 @@ class Bot:
         write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A2:E", values=rows)
 
     def get_jobs_from_sheets(self):
-        rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A2:E")
+        rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:E")
         headers = rows[0]
 
         for job in rows[0:]:
@@ -157,3 +153,14 @@ class Bot:
                 job_data[header] = job[header]
 
             self.jobs.append(job_data)
+
+    def get_keywords(self):
+        rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('KEYWORDS_TAB')}!A:C")
+        headers = rows[0]
+
+        for job in rows[0:]:
+            job_data = {}
+            for header in headers:
+                job_data[header] = job[header]
+
+            self.keywords.append(job_data)

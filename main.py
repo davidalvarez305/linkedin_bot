@@ -1,21 +1,32 @@
-import sys
+import argparse
 from pkg.bot import Bot
 from dotenv import load_dotenv
 
 def main():
     load_dotenv()
-    if "-k" in sys.argv:
-        index = sys.argv.index("-k")
-        
-        if len(sys.argv) > index + 1:
-            string_arg = " ".join(sys.argv[index + 1:])
-            
-            bot = Bot(string_arg)
-            bot.crawl_jobs()
-        else:
-            raise Exception("No string argument provided after the -k flag.")
+
+    # Create an argument parser
+    parser = argparse.ArgumentParser()
+
+    # Initialize bot
+    bot = Bot()
+
+    # Add the -c and -a flags
+    parser.add_argument('-c', action='store_true', help='Call crawl_jobs() method')
+    parser.add_argument('-a', action='store_true', help='Call apply_to_jobs() method')
+
+    # Parse the command-line arguments
+    args = parser.parse_args()
+
+    # Check which flag was provided
+    if args.c:
+        bot.get_keywords()
+        for keyword in bot.keywords:
+            bot.crawl_jobs(keyword)
+    elif args.a:
+        bot.apply_to_jobs()
     else:
-        raise Exception("The -k flag is not specified.")
+        raise Exception("No flag provided. Please use either -c or -a.")
 
 if __name__ == "__main__":
     main()

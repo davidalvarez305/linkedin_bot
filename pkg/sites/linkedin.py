@@ -37,11 +37,11 @@ def find_jobs_button(driver):
         input("Press enter after looking up jobs: ")
         pass
 
-def go_to_jobs_search(driver, keywords):
+def go_to_jobs_search(driver, keyword):
     try:
         search_input = driver.find_element(
             By.XPATH, '//input[@placeholder="Search"]')
-        search_input.send_keys(keywords)
+        search_input.send_keys(keyword)
         search_input.send_keys(Keys.RETURN)
         sleep(4)
         find_jobs_button(driver)
