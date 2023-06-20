@@ -49,7 +49,7 @@ class Bot:
         if self.keywords == "":
             raise Exception("No keywords were provided during initialization.")
 
-    def get_jobs(self):
+    def crawl_jobs(self):
         # Initialize Driver
         self.driver = webdriver.Firefox()
         self.driver.get("https://www.linkedin.com/login")
@@ -146,3 +146,14 @@ class Bot:
         rows += jobs
 
         write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A2:E", values=rows)
+
+    def get_jobs_from_sheets(self):
+        rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A2:E")
+        headers = rows[0]
+
+        for job in rows[0:]:
+            job_data = {}
+            for header in headers:
+                job_data[header] = job[header]
+
+            self.jobs.append(job_data)

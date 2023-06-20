@@ -11,7 +11,7 @@ def main():
             string_arg = " ".join(sys.argv[index + 1:])
             
             bot = Bot(string_arg)
-            bot.get_jobs()
+            bot.crawl_jobs()
         else:
             raise Exception("No string argument provided after the -k flag.")
     else:
