@@ -50,41 +50,61 @@ def go_to_jobs_search(driver, keywords):
         pass
 
 def extract_job_data(web_element: WebElement, driver: WebDriver):
-    data = {}
-
     # Click to open right-side card
     web_element.click()
     sleep(1)
 
-    # Company Name
-    company_name_card = web_element.find_element(By.XPATH, '//a[@class="ember-view t-black t-normal"]')
+    cards = [
+        {
+            'card': 'company_name',
+            'by': By.XPATH,
+            'search_string': '//a[@class="ember-view t-black t-normal"]',
+        },
+        {
+            'card': 'job_title',
+            'by': By.XPATH,
+            'search_string': '//h2[@class="t-24 t-bold jobs-unified-top-card__job-title"]',
+        },
+        {
+            'card': 'salary',
+            'by': By.XPATH,
+            'search_string': '//a[@href="#SALARY"]',
+        },
+        {
+            'card': 'location',
+            'by': By.XPATH,
+            'search_string': '//span[@class="jobs-unified-top-card__workplace-type"]',
+        },
+        {
+            'card': 'appply',
+            'by': By.XPATH,
+            'search_string': '//button[@class="jobs-apply-button artdeco-button artdeco-button--icon-right artdeco-button--3 artdeco-button--primary ember-view"]',
+        },
+    ]
 
-    # Title
-    job_title = web_element.find_element(By.XPATH, '//h2[@class="t-24 t-bold jobs-unified-top-card__job-title"]')
+    job_data = {}
 
-    # Salary
-    salary_card = web_element.find_element(By.XPATH, '//a[@href="#SALARY"]')
+    for card in cards:
+        try:
+            if card['card'] == 'apply':
+                apply_button = web_element.find_element(card['by'], card['search_string'])
+                apply_button.click()
+                sleep(5)
 
-    # Location
-    location_card = web_element.find_element(By.XPATH, '//span[@class="jobs-unified-top-card__workplace-type"]')
+                # Get link from newly open window, then close it.
+                driver.switch_to.window(driver.window_handles[1])
+                job_apply_url = driver.current_url
+                driver.close()
+                driver.switch_to.window(driver.window_handles[0])
 
-    # Link
-    apply_button = web_element.find_element(By.XPATH, '//button[@class="jobs-apply-button artdeco-button artdeco-button--icon-right artdeco-button--3 artdeco-button--primary ember-view"]')
-    apply_button.click()
-    sleep(5)
+                job_data[card['card']] = job_apply_url.strip()
+            else:
+                el = web_element.find_element(card['by'], card['search_string'])
+                job_data[card['card']] = el.get_attribute('textContent').strip()
+        except BaseException as err:
+            print("FAILED CRAWLING ELEMENT: ", err)
+            continue
 
-    # Get link from newly open window, then close it.
-    driver.switch_to.window(driver.window_handles[1])
-    job_apply_url = driver.current_url
-    driver.close()
-    driver.switch_to.window(driver.window_handles[0])
+    print('data: ', job_data)
 
-    data['title'] = job_title.get_attribute('textContent').strip()
-    data['link'] = job_apply_url.strip()
-    data['salary'] = salary_card.get_attribute('textContent').strip()
-    data['company'] = company_name_card.get_attribute('textContent').strip()
-    data['location'] = location_card.get_attribute('textContent').strip()
-
-    print('data: ', data)
-
-    return data
+    return job_data
