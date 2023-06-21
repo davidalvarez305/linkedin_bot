@@ -88,24 +88,16 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
         try:
             if card['card'] == 'apply':
                 apply_button = web_element.find_element(card['by'], card['search_string'])
+                apply_button.click()
+                sleep(5)
 
-                if apply_button.get_attribute('textContent').strip() == 'Easy Apply':
+                # Get link from newly open window, then close it.
+                driver.switch_to.window(driver.window_handles[1])
+                job_apply_url = driver.current_url
+                driver.close()
+                driver.switch_to.window(driver.window_handles[0])
 
-                    easy_apply_button = web_element.find_element(card['by'], '//div[@class="display-flex justify-space-between"]')
-                    link_el = easy_apply_button.find_element(By.TAG_NAME, 'a')
-
-                    job_data[card['card']] = link_el.get_attribute('href').strip()
-                else:
-                    apply_button.click()
-                    sleep(5)
-
-                    # Get link from newly open window, then close it.
-                    driver.switch_to.window(driver.window_handles[1])
-                    job_apply_url = driver.current_url
-                    driver.close()
-                    driver.switch_to.window(driver.window_handles[0])
-
-                    job_data[card['card']] = job_apply_url.strip()
+                job_data[card['card']] = job_apply_url.strip()
             else:
                 el = web_element.find_element(card['by'], card['search_string'])
                 job_data[card['card']] = el.get_attribute('textContent').strip()
@@ -115,5 +107,12 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
         finally:
             if job_data.get(card['card']) == None:
                 job_data[card['card']] = ""
+
+            # Try to get easy apply information
+            if card['card'] == 'apply' and job_data.get(card['card']) == None:
+                easy_apply_button = web_element.find_element(card['by'], '//div[@class="display-flex justify-space-between"]')
+                link_el = easy_apply_button.find_element(By.TAG_NAME, 'a')
+
+                job_data[card['card']] = link_el.get_attribute('href').strip()
 
     return job_data
