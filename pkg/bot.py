@@ -129,7 +129,7 @@ class Bot:
                 continue
 
     def save_jobs(self):
-        rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('JOBS_TAB')}!A2:E")
+        rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('JOBS_TAB')}!A:E")
         headers = rows[0]
 
         jobs = []
