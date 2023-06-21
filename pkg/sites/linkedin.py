@@ -105,14 +105,13 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
             print("FAILED CRAWLING ELEMENT: ", err)
             continue
         finally:
-            if job_data.get(card['card']) == None:
-                job_data[card['card']] = ""
-
             # Try to get easy apply information
             if card['card'] == 'apply' and job_data.get(card['card']) == None:
                 easy_apply_button = web_element.find_element(card['by'], '//div[@class="display-flex justify-space-between"]')
                 link_el = easy_apply_button.find_element(By.TAG_NAME, 'a')
 
                 job_data[card['card']] = link_el.get_attribute('href').strip()
+            if job_data.get(card['card']) == None:
+                job_data[card['card']] = ""
 
     return job_data
