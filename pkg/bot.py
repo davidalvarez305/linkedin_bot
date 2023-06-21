@@ -147,20 +147,14 @@ class Bot:
         rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:E")
         headers = rows[0]
 
-        for job in rows[0:]:
+        for job in rows[1:]:
             job_data = {}
-            for header in headers:
-                job_data[header] = job[header]
+            for index, data in enumerate(job):
+                job_data[headers[index]] = data
 
             self.jobs.append(job_data)
 
     def get_keywords(self):
-        rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('KEYWORDS_TAB')}!A:C")
-        headers = rows[0]
-
-        for job in rows[0:]:
-            job_data = {}
-            for header in headers:
-                job_data[header] = job[header]
-
-            self.keywords.append(job_data)
+        rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('KEYWORDS_TAB')}!A:A")
+        for keyword in rows[1:]:
+            self.keywords.append(keyword[0])

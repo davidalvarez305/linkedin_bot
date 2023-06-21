@@ -23,6 +23,7 @@ def main():
         bot.get_keywords()
         for keyword in bot.keywords:
             bot.crawl_jobs(keyword)
+            pass
     elif args.a:
         bot.apply_to_jobs()
     else:
