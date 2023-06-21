@@ -141,7 +141,7 @@ class Bot:
             jobs.append(job_data)
         rows += jobs
 
-        write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A2:E", values=rows)
+        write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:E", values=rows)
 
     def get_jobs_from_sheets(self):
         rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:E")
