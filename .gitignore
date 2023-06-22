@@ -1,4 +1,5 @@
 *.env
 *.log
 *.json
+*.pdf
 __pycache__
