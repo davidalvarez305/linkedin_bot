@@ -5,6 +5,8 @@ import json
 from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
+from pkg.handler import Handler
 from. helpers.sheets import get_values, write_values
 
 from .sites.linkedin import extract_job_data, go_to_jobs_search
@@ -106,27 +108,11 @@ class Bot:
             raise Exception("There are no jobs to apply for.")
         
         self.driver = webdriver.Firefox()
+        handler = Handler(driver=self.driver, data=self.data)
 
         for job in self.jobs:
-            if "workdayjobs" in job['apply']:
-                handle_workdayjobs(driver=self.driver, data=self.data)
-                return
-            if "bamboohr" in job['apply']:
-                click_preapplication_button(driver=self.driver)
-                bamboo(driver=self.driver, data=self.data)
-            if "smartrecruiters" in job['apply']:
-                upload_smartrecruiters_resume(driver=self.driver)
             try:
-                if "greenhouse" in job['apply']:
-                    greenhouse(driver=self.driver, data=self.data, values=self.values)
-                elif "smartrecruiters" in job['apply']:
-                    smartrecruiters(driver=self.driver, data=self.data, values=self.values)
-                elif "lever" in job['apply']:
-                    lever(driver=self.driver, data=self.data, values=self.values)
-                elif "underdog.io" in job['apply']:
-                    underdog(driver=self.driver, data=self.data, values=self.values)
-                else:
-                    enter_fields(self.driver, self.values, self.data)
+                handler.handle_job(job=job)
             except BaseException:
                 continue
 

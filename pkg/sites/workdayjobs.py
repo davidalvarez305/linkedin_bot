@@ -232,7 +232,7 @@ def click_add_fields(driver):
             print(err)
 
 def handle_workdayjobs(driver, data):
-    driver.get(data['url'])
+    driver.get(data['apply'])
 
     WebDriverWait(driver, timeout=10).until(
         lambda d: d.find_element(By.TAG_NAME, "html"))
