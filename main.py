@@ -25,6 +25,7 @@ def main():
             bot.crawl_jobs(keyword)
             pass
     elif args.a:
+        bot.get_jobs_from_sheets()
         bot.apply_to_jobs()
     else:
         raise Exception("No flag provided. Please use either -c or -a.")

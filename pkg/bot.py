@@ -104,24 +104,26 @@ class Bot:
 
         if len(self.jobs) == 0:
             raise Exception("There are no jobs to apply for.")
+        
+        self.driver = webdriver.Firefox()
 
         for job in self.jobs:
-            if "workdayjobs" in job['link']:
+            if "workdayjobs" in job['apply']:
                 handle_workdayjobs(driver=self.driver, data=self.data)
                 return
-            if "bamboohr" in job['link']:
+            if "bamboohr" in job['apply']:
                 click_preapplication_button(driver=self.driver)
                 bamboo(driver=self.driver, data=self.data)
-            if "smartrecruiters" in job['link']:
+            if "smartrecruiters" in job['apply']:
                 upload_smartrecruiters_resume(driver=self.driver)
             try:
-                if "greenhouse" in job['link']:
+                if "greenhouse" in job['apply']:
                     greenhouse(driver=self.driver, data=self.data, values=self.values)
-                elif "smartrecruiters" in job['link']:
+                elif "smartrecruiters" in job['apply']:
                     smartrecruiters(driver=self.driver, data=self.data, values=self.values)
-                elif "lever" in job['link']:
+                elif "lever" in job['apply']:
                     lever(driver=self.driver, data=self.data, values=self.values)
-                elif "underdog.io" in job['link']:
+                elif "underdog.io" in job['apply']:
                     underdog(driver=self.driver, data=self.data, values=self.values)
                 else:
                     enter_fields(self.driver, self.values, self.data)
