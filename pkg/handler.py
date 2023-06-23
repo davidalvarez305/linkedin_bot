@@ -16,10 +16,11 @@ class Handler:
         if "bamboohr" in job['apply']:
             self.click_preapplication_button(driver=self.driver)
             self.bamboo(driver=self.driver, data=self.data)
-        if "smartrecruiters" in job['apply']:
-            self.upload_smartrecruiters_resume(driver=self.driver)
         try:
             if "smartrecruiters" in job['apply']:
+                resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
+                resume_upload.send_keys(self.bot.data['resume'])
+                sleep(5)
                 self.handle_smartrecruiters()
             elif "underdog.io" in job['apply']:
                 self.underdog(driver=self.driver, data=self.data, values=self.values)
