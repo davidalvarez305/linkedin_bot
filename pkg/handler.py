@@ -3,6 +3,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from pkg.list import COMMON_QUESTIONS
 from pkg.sites.bamboo import handle_select_div
+from pkg.sites.underdog import auto_complete
 
 from pkg.sites.workdayjobs import click_add_fields, click_hidden_button, click_save_and_continue, enter_login, get_correct_year, handle_inputs, perform_action
 from pkg.utils import handle_calendar_select, handle_smart_autocomplete_fields, handle_textarea
@@ -25,7 +26,7 @@ class Handler:
                 sleep(5)
                 self.handle_smartrecruiters()
             elif "underdog.io" in job['apply']:
-                self.underdog(driver=self.driver, data=self.data, values=self.values)
+                self.handle_underdog()
             else:
                 self.enter_fields(self.driver, self.values, self.data)
         except BaseException:
@@ -252,3 +253,80 @@ class Handler:
         except BaseException as err:
             print(err)
             pass
+
+    def handle_underdog_fields(self):
+        try:
+            dropdowns = self.bot.driver.find_elements(By.CLASS_NAME, "div-block-37")
+        
+            for element in dropdowns:
+                element.click()
+
+                options = self.bot.driver.find_elements(
+                        By.TAG_NAME, "option")
+
+                select_fields = self.bot.driver.find_elements(By.TAG_NAME, "select")
+
+                def select_option(selection):
+                    options = self.bot.driver.find_elements(By.TAG_NAME, "option")
+                    for option in options:
+                        option_name = option.get_attribute('textContent')
+                        if option_name == selection:
+                            option.click()
+
+                for select_field in select_fields:
+                    select_field.click()
+                    field_name = select_field.get_attribute('name')
+                    if "location" in field_name.lower():
+                        select_option("Remote")
+                    if "search_status" in field_name.lower():
+                        select_option("Actively interviewing")
+                    if "technical" in field_name.lower():
+                        select_option("Technical")
+                    if "experience_level" in field_name.lower():
+                        select_option("1-2 years")
+                    if "visa_toggle" in field_name.lower():
+                        select_option("I am a U.S. citizen or a lawful permanent resident")
+
+                hidden_inputs = self.bot.driver.find_elements(By.CLASS_NAME, "autocomplete__input")
+
+                for input in hidden_inputs:
+                    input_name = input.find_element(By.XPATH, ".//ancestor::label").get_attribute('textContent')
+                    try:
+                        if "Current location" in input_name:
+                            input.send_keys("Hialeah, FL, USA")
+                            input.click()
+                            sleep(1.5)
+                            auto_complete(self.bot.driver, "li")
+                        if "Location preference" in input_name:
+                            input.send_keys("Remote")
+                            input.click()
+                            auto_complete(self.bot.driver, "li")
+                        if "Skills" in input_name:
+                            input.send_keys("Python, Javascript, SQL, Go, Docker, AWS, Linux, Google Cloud Platform")
+                            input.click()
+                            auto_complete(self.bot.driver, "li")
+                        if "Job type preference(s)" in input_name:
+                            input.send_keys("I want a full")
+                            input.click()
+                            auto_complete(self.bot.driver, "li")
+                    except BaseException as err:
+                        print(err)
+
+                for element in options:
+                    if element.get_attribute('value') == "":
+                        field_name = element.get_attribute('name')
+                        if "first" in field_name.lower():
+                            element.send_keys(self.bot.data['firstName'])
+                        if "resume" in field_name.lower():
+                            element.send_keys(self.bot.data['resume'])
+                        if "last" in field_name.lower():
+                            element.send_keys(self.bot.data['lastName'])
+                        if "email" in field_name.lower():
+                            element.send_keys(self.bot.data['email'])
+                        if "website" in field_name.lower():
+                            element.send_keys(self.bot.data['linkedIn'])
+                        if "github" in field_name.lower() or "portfolio" in field_name.lower():
+                            element.send_keys(self.bot.data['portfolio'])
+        except BaseException as err:
+                print(err)
+                pass
