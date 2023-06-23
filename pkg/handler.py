@@ -17,7 +17,7 @@ class Handler:
             return
         if "bamboohr" in job['apply']:
             self.click_preapplication_button(driver=self.driver)
-            self.bamboo(driver=self.driver, data=self.data)
+            self.handle_bamboo()
         try:
             if "smartrecruiters" in job['apply']:
                 resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
