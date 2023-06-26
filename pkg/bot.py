@@ -108,7 +108,7 @@ class Bot:
             raise Exception("There are no jobs to apply for.")
         
         self.driver = webdriver.Firefox()
-        handler = Handler(driver=self.driver, data=self.data)
+        handler = Handler(bot=self)
 
         for job in self.jobs:
             try:

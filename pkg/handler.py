@@ -30,7 +30,8 @@ class Handler:
                 self.handle_underdog_fields()
             else:
                 self.handle_fields()
-        except BaseException:
+        except BaseException as err:
+            print(err)
             pass
     
     def handle_workdayjobs(self):
