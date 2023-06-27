@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -14,25 +15,40 @@ class Handler:
         self.bot = bot
     
     def handle_job(self, job):
-        if "workdayjobs" in job['apply']:
-            self.handle_workdayjobs()
-            return
-        if "bamboohr" in job['apply']:
-            click_preapplication_button(driver=self.driver)
-            self.handle_bamboo()
-        try:
-            if "smartrecruiters" in job['apply']:
-                resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
-                resume_upload.send_keys(self.bot.data['resume'])
-                sleep(5)
-                self.handle_smartrecruiters()
-            elif "underdog.io" in job['apply']:
-                self.handle_underdog_fields()
-            else:
-                self.handle_fields()
-        except BaseException as err:
-            print(err)
-            pass
+        key = " "
+        while (key == " "):
+            print('KEY START OF LOOP: ', key)
+            try:
+                if "workdayjobs" in job['apply']:
+                    self.handle_workdayjobs()
+                    return
+                if "bamboohr" in job['apply']:
+                    click_preapplication_button(driver=self.driver)
+                    self.handle_bamboo()
+                    if "smartrecruiters" in job['apply']:
+                        resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
+                        resume_upload.send_keys(self.bot.data['resume'])
+                        sleep(5)
+                        self.handle_smartrecruiters()
+                    elif "underdog.io" in job['apply']:
+                        self.handle_underdog_fields()
+                    else:
+                        self.handle_fields()
+            except BaseException as err:
+                user_input = input()
+                if user_input != ' ':
+                    os.abort()
+                else:
+                    continue
+            finally:
+                user_input = input("Press 1 to keep going. Press 2 to re-try. Press 3 to terminte program.")
+                if user_input == "1":
+                    break
+                if user_input == "2":
+                    continue
+                if user_input == "3":
+                    os.abort()
+
     
     def handle_workdayjobs(self):
         self.bot.driver.get(self.bot.data['apply'])
