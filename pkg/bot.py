@@ -121,7 +121,7 @@ class Bot:
                     self.driver.get(job.get('apply'))
                     handler.handle_job(job=job)
             except BaseException as err:
-                print("ERROR: ", err)
+                print("err: ", err)
                 continue
 
     def save_jobs(self):
