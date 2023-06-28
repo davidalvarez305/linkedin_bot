@@ -4,20 +4,13 @@ import os
 import json
 from time import sleep
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from pkg.handler import Handler
 from. helpers.sheets import get_values, write_values
 
 from .sites.linkedin import extract_job_data, go_to_jobs_search
-from .handle_fields import enter_fields
-from .sites.bamboo import bamboo
-from .sites.underdog import underdog
-from .sites.lever import lever
-from .sites.smartrecruiters import smartrecruiters, upload_smartrecruiters_resume
-from .sites.greenhouse import greenhouse
-from .sites.workdayjobs import handle_workdayjobs
-from .utils import click_preapplication_button
 
 def read_data_from_json():
     file_path = os.path.join(os.getcwd(), "data.json")
@@ -31,6 +24,18 @@ def read_data_from_json():
     except json.JSONDecodeError:
         print(f"Error: Failed to decode JSON in 'data.json'.")
         return None
+
+def initialize_driver():
+    driver = webdriver.Firefox()
+    
+    # Maximize the browser window (optional)
+    driver.maximize_window()
+    
+    # Wait for the page to be loaded completely
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
+    
+    return driver
 
 class Bot:
     def __init__(self):
@@ -107,13 +112,14 @@ class Bot:
         if len(self.jobs) == 0:
             raise Exception("There are no jobs to apply for.")
         
-        self.driver = webdriver.Firefox()
+        self.driver = initialize_driver()
         handler = Handler(bot=self)
 
         for job in self.jobs:
             try:
                 handler.handle_job(job=job)
-            except BaseException:
+            except BaseException as err:
+                print("ERROR: ", err)
                 continue
 
     def save_jobs(self):

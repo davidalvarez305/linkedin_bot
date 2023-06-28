@@ -15,9 +15,6 @@ class Handler:
         self.bot = bot
     
     def handle_job(self, job):
-        key = " "
-        while (key == " "):
-            print('KEY START OF LOOP: ', key)
             try:
                 if "workdayjobs" in job['apply']:
                     self.handle_workdayjobs()
@@ -35,20 +32,7 @@ class Handler:
                     else:
                         self.handle_fields()
             except BaseException as err:
-                user_input = input()
-                if user_input != ' ':
-                    os.abort()
-                else:
-                    continue
-            finally:
-                user_input = input("Press 1 to keep going. Press 2 to re-try. Press 3 to terminte program.")
-                if user_input == "1":
-                    break
-                if user_input == "2":
-                    continue
-                if user_input == "3":
-                    os.abort()
-
+                raise Exception(err)
     
     def handle_workdayjobs(self):
         self.bot.driver.get(self.bot.data['apply'])
