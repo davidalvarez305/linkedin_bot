@@ -16,21 +16,21 @@ class Handler:
     
     def handle_job(self, job):
             try:
-                if "workdayjobs" in job['apply']:
+                if "workdayjobs" in job.get('apply'):
                     self.handle_workdayjobs()
                     return
-                if "bamboohr" in job['apply']:
+                elif "bamboohr" in job.get('apply'):
                     click_preapplication_button(driver=self.driver)
                     self.handle_bamboo()
-                    if "smartrecruiters" in job['apply']:
-                        resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
-                        resume_upload.send_keys(self.bot.data['resume'])
-                        sleep(5)
-                        self.handle_smartrecruiters()
-                    elif "underdog.io" in job['apply']:
-                        self.handle_underdog_fields()
-                    else:
-                        self.handle_fields()
+                elif "smartrecruiters" in job.get('apply'):
+                    resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
+                    resume_upload.send_keys(self.bot.data['resume'])
+                    sleep(5)
+                    self.handle_smartrecruiters()
+                elif "underdog.io" in job.get('apply'):
+                    self.handle_underdog_fields()
+                else:
+                    self.handle_fields()
             except BaseException as err:
                 raise Exception(err)
     
