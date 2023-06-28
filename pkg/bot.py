@@ -117,7 +117,9 @@ class Bot:
 
         for job in self.jobs:
             try:
-                handler.handle_job(job=job)
+                if job.get('apply') is not None:
+                    self.driver.get(job.get('apply'))
+                    handler.handle_job(job=job)
             except BaseException as err:
                 print("ERROR: ", err)
                 continue
