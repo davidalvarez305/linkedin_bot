@@ -75,10 +75,7 @@ class Parser:
                     ]
                     if "resume" in resume_fields:
                             if field['element'].get_attribute('value') == "":
-                                field['element'].send_keys(os.environ.get('RESUME_PATH'))
-                    if "cover" in resume_fields:
-                        if field['element'].get_attribute('value') == "":
-                            field['element'].send_keys(os.environ.get('COVER_PATH'))
+                                field['element'].send_keys(data['resume'])
 
                 # Handle Select Buttons
                 elif field['tagName'] == 'SELECT':
