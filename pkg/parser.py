@@ -3,14 +3,16 @@ from selenium.webdriver.common.by import By
 from time import sleep
 
 class Parser:
-    def __init__(self):
+    def __init__(self, questions, data):
         self.fields = []
+        self.questions = questions
+        self.data = data
 
-    def get_element(element: WebElement, values):
+    def get_element(self, element: WebElement):
         attributes = ['id', 'name', 'class']
         for attr in attributes:
             attribute = element.get_attribute(attr)
-            for question in values:
+            for question in self.questions:
                 try:
                     if attribute and attribute.lower() in question['question']:
                         field = {}
@@ -24,7 +26,7 @@ class Parser:
                 except BaseException:
                     continue
 
-    def find_form_fields(self, driver: WebDriver, values):
+    def find_form_fields(self, driver: WebDriver):
         form_elements = []
 
         tag_names = ['select', 'input', 'button', 'textarea']
@@ -33,7 +35,7 @@ class Parser:
             form_elements += driver.find_elements(By.TAG_NAME, tag)
 
         for element in form_elements:
-            field = self.get_element(element, values)
+            field = self.get_element(element, self.questions)
             if field:
                 self.fields.append(field)
 
@@ -60,7 +62,7 @@ class Parser:
                 except BaseException:
                     continue
 
-    def handle_fields(self, values, data):
+    def handle_fields(self):
         for field in self.fields:
                 # Handle Resume Upload
                 if field['tagName'] == 'BUTTON':
@@ -75,31 +77,31 @@ class Parser:
                     ]
                     if "resume" in resume_fields:
                             if field['element'].get_attribute('value') == "":
-                                field['element'].send_keys(data['resume'])
+                                field['element'].send_keys(self.data['resume'])
 
                 # Handle Select Buttons
                 elif field['tagName'] == 'SELECT':
-                    for question in values:
+                    for question in self.questions:
                         if any(substr in field['label'].lower() for substr in question['question']):
-                            if data[f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
+                            if self.data[f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
                                 field['element'].click()
                                 sleep(1)
 
                             options = field['element'].find_elements(By.TAG_NAME, 'option')
                             for option in options:
-                                if data[f"{question['data']}"].lower() in option.get_attribute('textContent').lower():
+                                if self.data[f"{question['data']}"].lower() in option.get_attribute('textContent').lower():
                                     option.click()
 
                 # Handle Checkboxes & Radio Buttons
                 elif field['tagName'] == 'INPUT' and field['element'].get_attribute('type') in ['checkbox', 'radio']:
-                    for question in values:
+                    for question in self.questions:
                         if any(substr in field['label'].lower() for substr in question['question']):
-                            if data[f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
+                            if self.data[f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
                                 field['element'].click()
 
                 # Handle Normal Inputs
                 else:
-                    for question in values:
+                    for question in self.questions:
                         if any(substr in field['label'].lower() for substr in question['question']):
                             if field['element'].get_attribute('value') == "":
-                                field['element'].send_keys(data[f"{question['data']}"])
+                                field['element'].send_keys(self.data[f"{question['data']}"])

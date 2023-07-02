@@ -5,6 +5,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from pkg.parser import Parser
 
 from pkg.handler import Handler
 from. helpers.sheets import get_values, write_values
@@ -115,6 +116,8 @@ class Bot:
         handler = Handler(bot=self)
 
         for job in self.jobs:
+
+            # Initialie a new parser for every new job. The parser will keep program state for the fields.
             parser = Parser()
             try:
                 if job.get('apply') is not None:

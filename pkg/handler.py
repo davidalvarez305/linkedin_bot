@@ -2,7 +2,6 @@ from time import sleep
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from pkg.list import COMMON_QUESTIONS
-from pkg.parser import Parser
 from pkg.sites.bamboo import handle_select_div
 from pkg.sites.underdog import auto_complete
 
