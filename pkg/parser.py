@@ -60,7 +60,7 @@ class Parser:
                 except BaseException:
                     continue
 
-    def handle_fields(self, driver: WebDriver, values, data):
+    def handle_fields(self, values, data):
         for field in self.fields:
                 # Handle Resume Upload
                 if field['tagName'] == 'BUTTON':
@@ -81,20 +81,20 @@ class Parser:
                 elif field['tagName'] == 'SELECT':
                     for question in values:
                         if any(substr in field['label'].lower() for substr in question['question']):
-                            if data['user'][f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
+                            if data[f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
                                 field['element'].click()
                                 sleep(1)
 
                             options = field['element'].find_elements(By.TAG_NAME, 'option')
                             for option in options:
-                                if data['user'][f"{question['data']}"].lower() in option.get_attribute('textContent').lower():
+                                if data[f"{question['data']}"].lower() in option.get_attribute('textContent').lower():
                                     option.click()
 
                 # Handle Checkboxes & Radio Buttons
                 elif field['tagName'] == 'INPUT' and field['element'].get_attribute('type') in ['checkbox', 'radio']:
                     for question in values:
                         if any(substr in field['label'].lower() for substr in question['question']):
-                            if data['user'][f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
+                            if data[f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
                                 field['element'].click()
 
                 # Handle Normal Inputs
@@ -102,4 +102,4 @@ class Parser:
                     for question in values:
                         if any(substr in field['label'].lower() for substr in question['question']):
                             if field['element'].get_attribute('value') == "":
-                                field['element'].send_keys(data['user'][f"{question['data']}"])
+                                field['element'].send_keys(data[f"{question['data']}"])
