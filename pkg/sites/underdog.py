@@ -1,4 +1,3 @@
-import os
 from time import sleep
 from selenium.webdriver.common.by import By
 
@@ -61,17 +60,17 @@ def handle_underdog(options, data, driver):
         if element.get_attribute('value') == "":
             field_name = element.get_attribute('name')
             if "first" in field_name.lower():
-                element.send_keys(data['user']['firstName'])
+                element.send_keys(data['firstName'])
             if "resume" in field_name.lower():
-                element.send_keys(os.environ.get('RESUME_PATH'))
+                element.send_keys(data['resume'])
             if "last" in field_name.lower():
-                element.send_keys(data['user']['lastName'])
+                element.send_keys(data['lastName'])
             if "email" in field_name.lower():
-                element.send_keys(data['user']['email'])
+                element.send_keys(data['email'])
             if "website" in field_name.lower():
-                element.send_keys(data['user']['linkedIn'])
+                element.send_keys(data['linkedIn'])
             if "github" in field_name.lower() or "portfolio" in field_name.lower():
-                element.send_keys(data['user']['portfolio'])
+                element.send_keys(data['portfolio'])
 
 def handle_underdog_fields(driver, data, values):
     try:

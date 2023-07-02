@@ -1,4 +1,3 @@
-import os
 from time import sleep
 from ..utils import complete_prompt, field_match, find_fields_by_label, handle_input_field, handle_select_child_options
 from selenium.webdriver.common.by import By
@@ -36,7 +35,7 @@ def handle_hidden_field(field_name, element, driver, data, values):
         if "Were you referred by" in field_name:
             handle_select_child_options(element, "No")
         if "resume" in field_name.lower():
-            element.send_keys(os.environ.get('RESUME_PATH'))
+            element.send_keys(data['resume'])
         if "require" in field_name and "immigration" in field_name:
             btns = driver.find_elements(By.CLASS_NAME, "application-answer-alternative")
             for btn in btns:

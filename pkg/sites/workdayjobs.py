@@ -1,4 +1,3 @@
-import os
 from time import sleep
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -86,7 +85,7 @@ def handle_multiple_input(driver, element, skills):
                 element.send_keys(Keys.CLEAR)
 
 
-def handle_inputs(driver):
+def handle_inputs(driver, data):
     elements = driver.find_elements(By.TAG_NAME, 'input')
     elements += driver.find_elements(By.TAG_NAME, 'button')
     elements += driver.find_elements(By.TAG_NAME, 'textarea')
@@ -116,27 +115,27 @@ def handle_inputs(driver):
                     if label == "Name":
                         input_field(el, 'David Alvarez')
                     if "Address Line 1" in label:
-                        input_field(el, os.environ.get('ADDRESS'))
+                        input_field(el, data['address'])
                     if "City" in label:
-                        input_field(el, os.environ.get('COMPANY_LOCATION'))
+                        input_field(el, data['companyLocation'])
                     if "Postal Code" in label:
-                        input_field(el, os.environ.get('ZIP_CODE'))
+                        input_field(el, data['zipCode'])
                     if "Phone Number" in label:
-                        input_field(el, os.environ.get('PHONE_NUMBER'))
+                        input_field(el, data['phoneNumber'])
                     if "Job Title" in label:
-                        input_field(el, os.environ.get('TITLE'))
+                        input_field(el, data['title'])
                     if "Company" in label:
-                        input_field(el, 'CURRENT COMPANY')
+                        input_field(el, data['currentCompany'])
                     if "Location" in label:
-                        input_field(el, os.environ.get('COMPANY_LOCATION'))
+                        input_field(el, data['companyLocation'])
                     if "currently working here" in label or "No, I Don't Have A Disability" in label:
                         el.click()
                     if "fluent in this language" in label or "terms and conditions" in label:
                         el.click()
                     if "Role Description" in label:
-                        input_field(el, os.environ.get('JOB_DESCRIPTION'))
+                        input_field(el, data['jobDescription'])
                     if "School or University" in label:
-                        input_field(el, os.environ.get('UNIVERSITY'))
+                        input_field(el, data['university'])
                     if "Field of Study" in label:
                         handle_multiple_input(driver, el, ['Marketing', 'Advertising'])
                     if "Skills" in label:
@@ -183,11 +182,11 @@ def handle_inputs(driver):
             continue
 
 
-def get_correct_year(driver):
+def get_correct_year(driver, data):
     try:
         year = driver.find_element(
             By.XPATH, '//*[@data-automation-id="monthPickerSpinnerLabel"]').get_attribute('innerText')
-        while int(os.environ.get('JOB_START_YEAR')) < int(year):
+        while int(data['jobStartYear']) < int(year):
             driver.find_element(
                 By.XPATH, '//*[@aria-label="Previous Year"]').click()
             current_year = driver.find_element(
@@ -256,7 +255,7 @@ def handle_workdayjobs(driver, data):
     sleep(5)
 
     # Enter Fields
-    handle_inputs(driver)
+    handle_inputs(driver, data)
 
     # Save & Continue
     click_save_and_continue(driver)
@@ -269,7 +268,7 @@ def handle_workdayjobs(driver, data):
 
     # Click Calendar for Dates & Handle Dates
     perform_action(driver, '//*[@data-automation-id="dateIcon"]', "click")
-    get_correct_year(driver)
+    get_correct_year(driver, data)
 
     months = driver.find_elements(By.TAG_NAME, 'li')
 
@@ -287,25 +286,25 @@ def handle_workdayjobs(driver, data):
     # Add LinkedIn
     perform_action(driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", keys=os.environ.get('LINKED_URL'))
 
-    handle_inputs(driver)
+    handle_inputs(driver, data)
 
     # Save & Continue
     click_save_and_continue(driver)
 
     # Handle Application Questions
-    handle_inputs(driver)
+    handle_inputs(driver, data)
 
     # Save & Continue
     click_save_and_continue(driver)
 
     # Handle Voluntary Disclosures
-    handle_inputs(driver)
+    handle_inputs(driver, data)
 
     # Save & Continue
     click_save_and_continue(driver)
 
     # Handle Self-Identify
-    handle_inputs(driver)
+    handle_inputs(driver, data)
 
     # Select Today's Date
     perform_action(driver, '//*[@data-automation-id="dateIcon"]', "click")

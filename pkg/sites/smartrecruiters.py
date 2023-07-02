@@ -5,9 +5,9 @@ from selenium.webdriver.common.by import By
 
 from ..utils import complete_prompt, handle_calendar_select, handle_smart_autocomplete_fields
 
-def upload_smartrecruiters_resume(driver):
+def upload_smartrecruiters_resume(driver, data):
     resume_upload = driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
-    resume_upload.send_keys(os.environ.get('RESUME_PATH'))
+    resume_upload.send_keys(data['resume'])
     sleep(5)
 
 def handle_smartrecruiters(driver, data, values):
