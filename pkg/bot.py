@@ -115,10 +115,11 @@ class Bot:
         handler = Handler(bot=self)
 
         for job in self.jobs:
+            parser = Parser()
             try:
                 if job.get('apply') is not None:
                     self.driver.get(job.get('apply'))
-                    handler.handle_job(job=job)
+                    handler.handle_job(job=job, parser=parser)
             except BaseException as err:
                 print("err: ", err)
                 continue

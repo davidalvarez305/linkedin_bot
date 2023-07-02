@@ -1,20 +1,19 @@
-import os
 from time import sleep
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
-from pkg.handle_fields import find_form_fields
 from pkg.list import COMMON_QUESTIONS
+from pkg.parser import Parser
 from pkg.sites.bamboo import handle_select_div
 from pkg.sites.underdog import auto_complete
 
 from pkg.sites.workdayjobs import click_add_fields, click_hidden_button, click_save_and_continue, enter_login, get_correct_year, handle_inputs, perform_action
-from pkg.utils import click_preapplication_button, find_fields_by_label, handle_calendar_select, handle_smart_autocomplete_fields, handle_textarea
+from pkg.utils import click_preapplication_button, handle_calendar_select, handle_smart_autocomplete_fields, handle_textarea
 
 class Handler:
     def __init__(self, bot):
         self.bot = bot
     
-    def handle_job(self, job):
+    def handle_job(self, job, parser):
             try:
                 if "workdayjobs" in job.get('apply'):
                     self.handle_workdayjobs()
@@ -332,54 +331,3 @@ class Handler:
         except BaseException as err:
                 print(err)
                 pass
-        
-    def handle_fields(self):
-        # Find Fields by Form Label
-        fields = find_fields_by_label(self.bot.driver)
-
-        # Append Form Fields
-        form_fields = find_form_fields(self.bot.driver, self.bot.values)
-        fields += form_fields
-
-        for field in fields:
-                # Handle Resume Upload
-                if field['tagName'] == 'BUTTON':
-                    resume_fields = [
-                        field['label'],
-                        field['element'].get_attribute('textContent'),
-                        field['element'].get_attribute('innerText'),
-                        field['element'].get_attribute('innerHTML'),
-                        field['element'].get_attribute('id'),
-                        field['element'].get_attribute('name'),
-                        field['element'].get_attribute('class')
-                    ]
-                    if "resume" in resume_fields:
-                            if field['element'].get_attribute('value') == "":
-                                field['element'].send_keys(self.bot.data['resume'])
-
-                # Handle Select Buttons
-                elif field['tagName'] == 'SELECT':
-                    for question in self.bot.values:
-                        if any(substr in field['label'].lower() for substr in question['question']):
-                            if self.bot.data[f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
-                                field['element'].click()
-                                sleep(1)
-
-                            options = field['element'].find_elements(By.TAG_NAME, 'option')
-                            for option in options:
-                                if self.bot.data[f"{question['data']}"].lower() in option.get_attribute('textContent').lower():
-                                    option.click()
-
-                # Handle Checkboxes & Radio Buttons
-                elif field['tagName'] == 'INPUT' and field['element'].get_attribute('type') in ['checkbox', 'radio']:
-                    for question in self.bot.values:
-                        if any(substr in field['label'].lower() for substr in question['question']):
-                            if self.bot.data[f"{question['data']}"].lower() in field['element'].get_attribute('value').lower():
-                                field['element'].click()
-
-                # Handle Normal Inputs
-                else:
-                    for question in self.bot.values:
-                        if any(substr in field['label'].lower() for substr in question['question']):
-                            if field['element'].get_attribute('value') == "":
-                                field['element'].send_keys(self.bot.data[f"{question['data']}"])
