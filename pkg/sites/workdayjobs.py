@@ -15,7 +15,7 @@ def click_hidden_button(driver, btn_xpath):
         pass
 
 
-def enter_login(driver, btn_xpath):
+def enter_login(driver, btn_xpath, data):
     form = driver.find_element(By.TAG_NAME, 'form')
 
     elements = form.find_elements(By.XPATH, './*')
@@ -27,10 +27,10 @@ def enter_login(driver, btn_xpath):
             input = element.find_element(By.TAG_NAME, 'input')
 
             if "Email" in label:
-                input.send_keys(os.environ.get('EMAIL'))
+                input.send_keys(data['email'])
 
             if "Password" in label:
-                input.send_keys(os.environ.get('PASSWORD'))
+                input.send_keys(data['password'])
 
         except BaseException:
             continue
@@ -240,14 +240,14 @@ def handle_workdayjobs(driver, data):
     # Navigate to Create Account & Create Account
     click_hidden_button(driver, '//button[@data-automation-id="createAccountLink"]')
 
-    # enter_login(driver, '//button[@data-automation-id="createAccountSubmitButton"]')
+    # enter_login(driver, '//button[@data-automation-id="createAccountSubmitButton"]', data)
     input("Verify email and come back: ")
 
     # Return to Sign In Screen
     click_hidden_button(driver, '//button[@data-automation-id="signInLink"]')
 
     # Submit & Verify Email -- Then Login
-    enter_login(driver, '//button[@data-automation-id="signInSubmitButton"]')
+    enter_login(driver, '//button[@data-automation-id="signInSubmitButton"]', data)
     sleep(5)
 
     # Apply Manually
@@ -278,13 +278,13 @@ def handle_workdayjobs(driver, data):
             break
 
     # Upload Resume
-    perform_action(driver, '//input[@data-automation-id="file-upload-input-ref"]', "send keys", keys=os.environ.get('RESUME_PATH'))
+    perform_action(driver, '//input[@data-automation-id="file-upload-input-ref"]', "send keys", keys=data['resume'])
 
     # Add Websites
-    perform_action(driver, '//input[@data-automation-id="website"]', "send keys", keys='https://github.com/davidalvarez305')
+    perform_action(driver, '//input[@data-automation-id="website"]', "send keys", keys=data['github'])
 
     # Add LinkedIn
-    perform_action(driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", keys=os.environ.get('LINKED_URL'))
+    perform_action(driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", keys=data['linkedin'])
 
     handle_inputs(driver, data)
 
