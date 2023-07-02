@@ -1,7 +1,6 @@
 from datetime import datetime
-from ..utils import complete_prompt, handle_input_field, handle_select_child_options
+from ..utils import handle_input_field, handle_select_child_options
 from selenium.webdriver.common.by import By
-
 
 def handle_lever_fields(field_name, element, data, values):
     select_fields = element.find_elements(By.TAG_NAME, 'select')
@@ -22,34 +21,3 @@ def handle_lever_fields(field_name, element, data, values):
                 else:
                     x_path = './label/div/input'
                     handle_input_field(element, data[f"{value['data']}"], x_path)
-
-def handle_lever(driver, data, values):
-    try:
-        elements = driver.find_elements(By.CLASS_NAME, "application-question")
-
-        elements += driver.find_elements(By.CLASS_NAME, "custom-question")
-
-        elements += driver.find_elements(By.CLASS_NAME, "application-dropdown")
-
-        elements += driver.find_elements(By.CLASS_NAME, "application-additional")
-
-        for element in elements:
-            field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
-
-            if not "Resume" in field_name:
-                element.click()
-
-            handle_lever_fields(field_name, element, data, values)
-    except BaseException as err:
-        print(err)
-        pass
-
-def lever(driver, data, values):
-    to_continue = True
-    while (to_continue):
-        try:
-            handle_lever(driver, data, values)
-            to_continue = complete_prompt()
-        except BaseException:
-            to_continue = complete_prompt()
-            continue

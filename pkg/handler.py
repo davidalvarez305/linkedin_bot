@@ -3,6 +3,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from pkg.list import COMMON_QUESTIONS
 from pkg.sites.bamboo import handle_select_div
+from pkg.sites.lever import handle_lever_fields
 from pkg.sites.underdog import auto_complete
 
 from pkg.sites.workdayjobs import click_add_fields, click_hidden_button, click_save_and_continue, enter_login, get_correct_year, handle_inputs, perform_action
@@ -20,15 +21,22 @@ class Handler:
                 elif "bamboohr" in job.get('apply'):
                     click_preapplication_button(driver=self.driver)
                     self.handle_bamboo()
+                    return
                 elif "smartrecruiters" in job.get('apply'):
                     resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
                     resume_upload.send_keys(self.bot.data['resume'])
                     sleep(5)
                     self.handle_smartrecruiters()
+                    return
                 elif "underdog.io" in job.get('apply'):
                     self.handle_underdog_fields()
+                    return
+                elif "handle_lever" in job.get('apply'):
+                    self.handle_lever()
+                    return
                 else:
                     self.handle_fields()
+                    return
             except BaseException as err:
                 raise Exception(err)
     
@@ -330,3 +338,24 @@ class Handler:
         except BaseException as err:
                 print(err)
                 pass
+        
+    def handle_lever(driver, data, values):
+        try:
+            elements = driver.find_elements(By.CLASS_NAME, "application-question")
+
+            elements += driver.find_elements(By.CLASS_NAME, "custom-question")
+
+            elements += driver.find_elements(By.CLASS_NAME, "application-dropdown")
+
+            elements += driver.find_elements(By.CLASS_NAME, "application-additional")
+
+            for element in elements:
+                field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
+
+                if not "Resume" in field_name:
+                    element.click()
+
+                handle_lever_fields(field_name, element, data, values)
+        except BaseException as err:
+            print(err)
+            pass
