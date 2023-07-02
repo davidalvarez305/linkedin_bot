@@ -83,7 +83,7 @@ class Handler:
         perform_action(self.bot.driver, '//input[@data-automation-id="file-upload-input-ref"]', "send keys", keys=self.bot.data['resume'])
 
         # Add Websites
-        perform_action(self.bot.driver, '//input[@data-automation-id="website"]', "send keys", keys='https://github.com/davidalvarez305')
+        perform_action(self.bot.driver, '//input[@data-automation-id="website"]', "send keys", keys=self.bot.data['github'])
 
         # Add LinkedIn
         perform_action(self.bot.driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", keys=self.bot.data['linkedin'])
@@ -302,7 +302,7 @@ class Handler:
                             input.click()
                             auto_complete(self.bot.driver, "li")
                         if "Skills" in input_name:
-                            input.send_keys("Python, Javascript, SQL, Go, Docker, AWS, Linux, Google Cloud Platform")
+                            input.send_keys(self.bot.data['jobSkills'])
                             input.click()
                             auto_complete(self.bot.driver, "li")
                         if "Job type preference(s)" in input_name:

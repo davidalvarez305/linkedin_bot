@@ -40,7 +40,7 @@ def initialize_driver():
 class Bot:
     def __init__(self):
         self.jobs = []
-        self.values = []
+        self.questions = []
         self.keywords = []
         self.data = read_data_from_json()
 
@@ -118,7 +118,7 @@ class Bot:
         for job in self.jobs:
 
             # Initialie a new parser for every new job. The parser will keep program state for the fields.
-            parser = Parser()
+            parser = Parser(questions=self.questions, data=self.data)
             try:
                 if job.get('apply') is not None:
                     self.driver.get(job.get('apply'))
