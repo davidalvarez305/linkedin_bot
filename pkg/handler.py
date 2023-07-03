@@ -14,31 +14,31 @@ class Handler:
         self.bot = bot
     
     def handle_job(self, job, parser):
-            try:
-                if "workdayjobs" in job.get('apply'):
-                    self.handle_workdayjobs()
-                    return
-                elif "bamboohr" in job.get('apply'):
-                    click_preapplication_button(driver=self.driver)
-                    self.handle_bamboo()
-                    return
-                elif "smartrecruiters" in job.get('apply'):
-                    resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
-                    resume_upload.send_keys(self.bot.data['resume'])
-                    sleep(5)
-                    self.handle_smartrecruiters()
-                    return
-                elif "underdog.io" in job.get('apply'):
-                    self.handle_underdog_fields()
-                    return
-                elif "handle_lever" in job.get('apply'):
-                    self.handle_lever()
-                    return
-                else:
-                    self.handle_fields()
-                    return
-            except BaseException as err:
-                raise Exception(err)
+        try:
+            if "workdayjobs" in job.get('apply'):
+                self.handle_workdayjobs()
+                return
+            elif "bamboohr" in job.get('apply'):
+                click_preapplication_button(driver=self.driver)
+                self.handle_bamboo()
+                return
+            elif "smartrecruiters" in job.get('apply'):
+                resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
+                resume_upload.send_keys(self.bot.data['resume'])
+                sleep(5)
+                self.handle_smartrecruiters()
+                return
+            elif "underdog.io" in job.get('apply'):
+                self.handle_underdog_fields()
+                return
+            elif "handle_lever" in job.get('apply'):
+                self.handle_lever()
+                return
+            else:
+                self.handle_fields()
+                return
+        except BaseException as err:
+            raise Exception(err)
     
     def handle_workdayjobs(self):
         self.bot.driver.get(self.bot.data['apply'])

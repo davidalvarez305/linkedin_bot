@@ -116,7 +116,6 @@ class Bot:
         handler = Handler(bot=self)
 
         for job in self.jobs:
-
             # Initialie a new parser for every new job. The parser will keep program state for the fields.
             parser = Parser(questions=self.questions, data=self.data)
             try:
