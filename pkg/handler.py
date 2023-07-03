@@ -17,6 +17,7 @@ class Handler:
         try:
             if "workdayjobs" in job.get('apply'):
                 self.handle_workdayjobs()
+                parser.handle_fields()
                 return
             elif "bamboohr" in job.get('apply'):
                 click_preapplication_button(driver=self.driver)

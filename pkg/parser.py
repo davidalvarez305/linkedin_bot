@@ -3,10 +3,11 @@ from selenium.webdriver.common.by import By
 from time import sleep
 
 class Parser:
-    def __init__(self, questions, data):
+    def __init__(self, questions, data, driver):
         self.fields = []
         self.questions = questions
         self.data = data
+        self.driver = driver
 
     def get_element(self, element: WebElement):
         attributes = ['id', 'name', 'class']
@@ -26,13 +27,12 @@ class Parser:
                 except BaseException:
                     continue
 
-    def find_form_fields(self, driver: WebDriver):
-        form_elements = []
+    def find_form_fields(self):
 
         tag_names = ['select', 'input', 'button', 'textarea']
 
         for tag in tag_names:
-            form_elements += driver.find_elements(By.TAG_NAME, tag)
+            form_elements += self.driver.find_elements(By.TAG_NAME, tag)
 
         for element in form_elements:
             field = self.get_element(element, self.questions)
@@ -63,6 +63,10 @@ class Parser:
                     continue
 
     def handle_fields(self):
+
+        self.fields += self.find_fields_by_label()
+        self.fields += self.find_form_fields()
+
         for field in self.fields:
                 # Handle Resume Upload
                 if field['tagName'] == 'BUTTON':
