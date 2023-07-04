@@ -2,7 +2,6 @@ from lib2to3.pytree import Base
 import os
 from random import uniform
 from time import sleep
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebElement, WebDriver

@@ -3,7 +3,7 @@ import os
 from time import sleep
 from selenium.webdriver.common.by import By
 
-from ..utils import complete_prompt, handle_calendar_select, handle_smart_autocomplete_fields
+from ..utils import handle_calendar_select, handle_smart_autocomplete_fields
 
 def upload_smartrecruiters_resume(driver, data):
     resume_upload = driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
@@ -111,13 +111,3 @@ def handle_smartrecruiters(driver, data, values):
     except BaseException as err:
         print(err)
         pass
-
-def smartrecruiters(driver, data, values):
-    to_continue = True
-    while (to_continue):
-        try:
-            handle_smartrecruiters(driver, data, values)
-            to_continue = complete_prompt()
-        except BaseException:
-            to_continue = complete_prompt()
-            continue

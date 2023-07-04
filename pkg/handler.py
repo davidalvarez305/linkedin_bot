@@ -12,34 +12,44 @@ from pkg.utils import click_preapplication_button, handle_calendar_select, handl
 class Handler:
     def __init__(self, bot):
         self.bot = bot
+
+    def is_completed(self):
+        val = input("Press any key to re-try: ")
+        if len(val) > 0:
+            return False
+        return True
     
     def handle_job(self, job, parser):
-        try:
-            if "workdayjobs" in job.get('apply'):
-                self.handle_workdayjobs()
-                parser.handle_fields()
-                return
-            elif "bamboohr" in job.get('apply'):
-                click_preapplication_button(driver=self.driver)
-                self.handle_bamboo()
-                return
-            elif "smartrecruiters" in job.get('apply'):
-                resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
-                resume_upload.send_keys(self.bot.data['resume'])
-                sleep(5)
-                self.handle_smartrecruiters()
-                return
-            elif "underdog.io" in job.get('apply'):
-                self.handle_underdog_fields()
-                return
-            elif "handle_lever" in job.get('apply'):
-                self.handle_lever()
-                return
-            else:
-                self.handle_fields()
-                return
-        except BaseException as err:
-            raise Exception(err)
+        while True:
+            try:
+                if "workdayjobs" in job.get('apply'):
+                    self.handle_workdayjobs()
+                    return
+                elif "bamboohr" in job.get('apply'):
+                    click_preapplication_button(driver=self.bot.driver)
+                    self.handle_bamboo()
+                    return
+                elif "smartrecruiters" in job.get('apply'):
+                    resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
+                    resume_upload.send_keys(self.bot.data['resume'])
+                    sleep(5)
+                    self.handle_smartrecruiters()
+                    return
+                elif "underdog.io" in job.get('apply'):
+                    self.handle_underdog_fields()
+                    return
+                elif "lever" in job.get('apply'):
+                    self.handle_lever(data=self.bot.data, questions=self.bot.questions)
+                    return
+                else:
+                    parser.handle_fields()
+                    return
+            except BaseException as err:
+                print(err)
+                if self.is_completed() == True:
+                    break
+                else:
+                    continue
     
     def handle_workdayjobs(self):
         self.bot.driver.get(self.bot.data['apply'])
@@ -340,7 +350,7 @@ class Handler:
                 print(err)
                 pass
         
-    def handle_lever(driver, data, values):
+    def handle_lever(driver, data, questions):
         try:
             elements = driver.find_elements(By.CLASS_NAME, "application-question")
 
@@ -356,7 +366,7 @@ class Handler:
                 if not "Resume" in field_name:
                     element.click()
 
-                handle_lever_fields(field_name, element, data, values)
+                handle_lever_fields(field_name, element, data, questions)
         except BaseException as err:
             print(err)
             pass

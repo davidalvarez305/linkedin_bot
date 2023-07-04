@@ -47,7 +47,7 @@ class Bot:
         # Get Spreadsheet Values
         rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('TAB_NAME')}!A2:E")
         for row in rows:
-            self.values.append({ "data": row[0], "question": row[1:] })
+            self.questions.append({ "data": row[0], "question": row[1:] })
 
         if self.data is None:
             raise Exception("Data from JSON file could not be loaded.")

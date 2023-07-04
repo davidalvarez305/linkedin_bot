@@ -1,8 +1,6 @@
 from time import sleep
 from selenium.webdriver.common.by import By
 
-from ..utils import complete_prompt
-
 def auto_complete(driver, tag):
     hidden_input = driver.find_element(By.TAG_NAME, tag)
     hidden_input.click()
@@ -86,13 +84,3 @@ def handle_underdog_fields(driver, data, values):
     except BaseException as err:
         print(err)
         pass
-    
-def underdog(driver, data, values):
-    to_continue = True
-    while (to_continue):
-        try:
-            handle_underdog_fields(driver, data, values)
-            to_continue = complete_prompt()
-        except BaseException:
-            to_continue = complete_prompt()
-            continue

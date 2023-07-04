@@ -39,8 +39,8 @@ class Parser:
             if field:
                 self.fields.append(field)
 
-    def find_fields_by_label(self, driver: WebDriver):
-        labels = driver.find_elements(By.TAG_NAME, 'label')
+    def find_fields_by_label(self):
+        labels = self.driver.find_elements(By.TAG_NAME, 'label')
 
         # Append fields by label.
         for label in labels:
@@ -53,7 +53,7 @@ class Parser:
                     field['label'] = label.get_attribute('innerText')
                     field['id'] = label.get_attribute('for')
 
-                    input_field = driver.find_element(By.ID, field['id'])
+                    input_field = self.driver.find_element(By.ID, field['id'])
                     field['tagName'] = input_field.get_attribute('tagName')
                     field['element'] = input_field
 

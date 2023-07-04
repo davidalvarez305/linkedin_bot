@@ -1,5 +1,5 @@
 from ..list import COMMON_QUESTIONS
-from ..utils import complete_prompt, handle_textarea
+from ..utils import handle_textarea
 from selenium.webdriver.common.by import By
 
 
@@ -45,13 +45,3 @@ def handle_bamboo(driver, data):
     except BaseException as err:
         print(err)
         pass
-
-def bamboo(driver, data):
-    to_continue = True
-    while (to_continue):
-        try:
-            handle_bamboo(driver, data)
-            to_continue = complete_prompt()
-        except BaseException:
-            to_continue = complete_prompt()
-            continue

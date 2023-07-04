@@ -2,7 +2,7 @@ from datetime import datetime
 from ..utils import handle_input_field, handle_select_child_options
 from selenium.webdriver.common.by import By
 
-def handle_lever_fields(field_name, element, data, values):
+def handle_lever_fields(field_name, element, data, questions):
     select_fields = element.find_elements(By.TAG_NAME, 'select')
 
     if "Today's date" in field_name:
@@ -14,10 +14,10 @@ def handle_lever_fields(field_name, element, data, values):
     elif "resume" in field_name.lower():
         element.send_keys(data['resume'])
     else:
-        for value in values:
-            if any(substr in field_name.lower() for substr in value['question']):
+        for question in questions:
+            if any(substr in field_name.lower() for substr in question['question']):
                 if len(select_fields) > 0:
-                    handle_select_child_options(element, data[f"{value['data']}"])
+                    handle_select_child_options(element, data[f"{question['data']}"])
                 else:
                     x_path = './label/div/input'
-                    handle_input_field(element, data[f"{value['data']}"], x_path)
+                    handle_input_field(element, data[f"{question['data']}"], x_path)
