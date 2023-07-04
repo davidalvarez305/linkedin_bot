@@ -293,6 +293,7 @@ class Handler:
 
             if len(dropdowns) == 0:
                 try:
+                    print('Attempting to find pre-application button')
                     # Try to click 'Apply' button in order to find dropdowns.
                     handle_pre_application_button(driver=self.bot.driver)
                     sleep(2)
