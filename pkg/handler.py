@@ -4,11 +4,11 @@ from selenium.webdriver.common.by import By
 from pkg.list import COMMON_QUESTIONS
 from pkg.sites.bamboo import handle_select_div
 from pkg.sites.greenhouse import handle_greenhouse_autocomplete, handle_hidden_field
-from pkg.sites.lever import find_lever_elements, handle_lever_fields, handle_pre_application_button
+from pkg.sites.lever import find_lever_elements, handle_lever_fields
 from pkg.sites.underdog import auto_complete
 
 from pkg.sites.workdayjobs import click_add_fields, click_hidden_button, click_save_and_continue, enter_login, get_correct_year, handle_inputs, perform_action
-from pkg.utils import click_preapplication_button, find_fields_by_label, handle_calendar_select, handle_smart_autocomplete_fields, handle_textarea
+from pkg.utils import click_preapplication_button, find_fields_by_label, handle_calendar_select, handle_pre_application_button, handle_smart_autocomplete_fields, handle_textarea
 
 class Handler:
     def __init__(self, bot):
@@ -290,6 +290,18 @@ class Handler:
         try:
             dropdowns = self.bot.driver.find_elements(By.CLASS_NAME, "div-block-37")
             print(f'{len(dropdowns)} dropdowns found.')
+
+            if len(dropdowns) == 0:
+                try:
+                    # Try to click 'Apply' button in order to find dropdowns.
+                    handle_pre_application_button(driver=self.bot.driver)
+                    sleep(2)
+
+                    # If click is successful, try finding dropdowns again.
+                    dropdowns = self.bot.driver.find_elements(By.CLASS_NAME, "div-block-37")
+                except BaseException as err:
+                    print("Error: ", err)
+                    raise Exception('Error finding dropdowns and/or apply button.')
         
             for element in dropdowns:
                 element.click()

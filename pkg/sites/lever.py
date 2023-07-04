@@ -22,19 +22,6 @@ def handle_lever_fields(field_name, element, data, questions):
                 else:
                     x_path = './label/div/input'
                     handle_input_field(element, data[f"{question['data']}"], x_path)
-
-def handle_pre_application_button(driver: WebDriver):
-    try:
-        buttons = driver.find_elements(By.TAG_NAME, 'a')
-
-        for button in buttons:
-            button_text = button.get_attribute('textContent')
-            if button_text is not None and 'Apply' in button_text:
-                button.click()
-                return
-
-    except BaseException as err:
-        raise Exception(err)
     
 def find_lever_elements(driver: WebDriver):
     elements = driver.find_elements(By.CLASS_NAME, "application-question")

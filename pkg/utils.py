@@ -81,3 +81,16 @@ def handle_calendar_select(driver, user_data):
         if user_data in el.get_attribute('textContent'):
             el.click()
             return
+
+def handle_pre_application_button(driver: WebDriver):
+    try:
+        buttons = driver.find_elements(By.TAG_NAME, 'a')
+
+        for button in buttons:
+            button_text = button.get_attribute('textContent')
+            if button_text is not None and 'Apply' in button_text:
+                button.click()
+                return
+
+    except BaseException as err:
+        raise Exception(err)
