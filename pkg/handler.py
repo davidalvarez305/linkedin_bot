@@ -3,11 +3,12 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from pkg.list import COMMON_QUESTIONS
 from pkg.sites.bamboo import handle_select_div
+from pkg.sites.greenhouse import handle_greenhouse_autocomplete, handle_hidden_field
 from pkg.sites.lever import find_lever_elements, handle_lever_fields, handle_pre_application_button
 from pkg.sites.underdog import auto_complete
 
 from pkg.sites.workdayjobs import click_add_fields, click_hidden_button, click_save_and_continue, enter_login, get_correct_year, handle_inputs, perform_action
-from pkg.utils import click_preapplication_button, handle_calendar_select, handle_smart_autocomplete_fields, handle_textarea
+from pkg.utils import click_preapplication_button, find_fields_by_label, handle_calendar_select, handle_smart_autocomplete_fields, handle_textarea
 
 class Handler:
     def __init__(self, bot):
@@ -39,6 +40,9 @@ class Handler:
                     self.handle_underdog_fields()
                     return
                 elif "lever" in job.get('apply'):
+                    self.handle_lever(data=self.bot.data, questions=self.bot.questions, driver=self.bot.driver)
+                    return
+                elif "greenhouse" in job.get('apply'):
                     self.handle_lever(data=self.bot.data, questions=self.bot.questions, driver=self.bot.driver)
                     return
                 else:
@@ -385,3 +389,37 @@ class Handler:
         except BaseException as err:
             print('Error: ', err)
             raise Exception('Failed to complete lever handling.')
+    
+    def handle_greenhouse(self):
+        try:
+            # Get Fields
+            dropdowns = self.bot.driver.find_elements(By.CLASS_NAME, "field")
+
+            input_fields = find_fields_by_label(driver=self.bot.driver)
+
+            for input_field in input_fields:
+                if "First" in input_field['label']:
+                    if input_field['element'].get_attribute('value') == "":
+                        input_field['element'].send_keys(self.bot.data['user']['firstName'])
+                if "Last" in input_field['label']:
+                    if input_field['element'].get_attribute('value') == "":
+                        input_field['element'].send_keys(self.bot.data['user']['lastName'])
+                if "Email" in input_field['label']:
+                    if input_field['element'].get_attribute('value') == "":
+                        input_field['element'].send_keys(self.bot.data['user']['email'])
+                if "Phone" in input_field['label']:
+                    if input_field['element'].get_attribute('value') == "":
+                        input_field['element'].send_keys(self.bot.data['user']['phoneNumber'])
+
+            for element in dropdowns:
+                element.click()
+                field_name = element.find_element(By.XPATH, "./label").get_attribute('innerText')
+
+                if "School" or "Degree" or "Discipline" in field_name:
+                    handle_greenhouse_autocomplete(self.bot.driver, self.bot.data, field_name)
+                    sleep(1)
+                
+                handle_hidden_field(field_name, element, self.bot.driver, self.bot.data, self.bot.questions)
+        except BaseException as err:
+            print(err)
+            pass

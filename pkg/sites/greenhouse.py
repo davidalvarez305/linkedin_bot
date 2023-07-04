@@ -47,37 +47,3 @@ def handle_hidden_field(field_name, element, driver, data, values):
             else:
                 x_path = './label/input[@type="text"]'
                 handle_input_field(element, data['user'][f"{value['data']}"], x_path)
-
-def handle_greenhouse(driver, data, values):
-    try:
-        # Get Fields
-        dropdowns = driver.find_elements(By.CLASS_NAME, "field")
-
-        input_fields = find_fields_by_label(driver=driver)
-
-        for input_field in input_fields:
-            if "First" in input_field['label']:
-                if input_field['element'].get_attribute('value') == "":
-                    input_field['element'].send_keys(data['user']['firstName'])
-            if "Last" in input_field['label']:
-                if input_field['element'].get_attribute('value') == "":
-                    input_field['element'].send_keys(data['user']['lastName'])
-            if "Email" in input_field['label']:
-                if input_field['element'].get_attribute('value') == "":
-                    input_field['element'].send_keys(data['user']['email'])
-            if "Phone" in input_field['label']:
-                if input_field['element'].get_attribute('value') == "":
-                    input_field['element'].send_keys(data['user']['phoneNumber'])
-
-        for element in dropdowns:
-                element.click()
-                field_name = element.find_element(By.XPATH, "./label").get_attribute('innerText')
-
-                if "School" or "Degree" or "Discipline" in field_name:
-                    handle_greenhouse_autocomplete(driver, data, field_name)
-                    sleep(1)
-                
-                handle_hidden_field(field_name, element, driver, data, values)
-    except BaseException as err:
-        print(err)
-        pass
