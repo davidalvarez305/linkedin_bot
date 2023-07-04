@@ -370,14 +370,19 @@ class Handler:
                 except BaseException as err:
                     raise Exception('No elements found on page. Apply button not able to be clicked.')
 
+            print('Handling elements...')
             for element in elements:
-                field_name =  element.find_element(By.NAME, "label").get_attribute('innerText')
+                try:
+                    field_name =  element.find_element(By.NAME, "label").get_attribute('innerText')
 
-                if not "Resume" in field_name:
-                    element.click()
+                    if not "Resume" in field_name:
+                        element.click()
 
-                print('Handling lever fields...')
-                handle_lever_fields(field_name, element, data, questions)
+                    print('Handling lever fields...')
+                    handle_lever_fields(field_name, element, data, questions)
+                except BaseException:
+                    continue
+
         except BaseException as err:
             print('Error: ', err)
             raise Exception('Failed to complete lever handling.')
