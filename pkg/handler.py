@@ -278,23 +278,23 @@ class Handler:
             pass
 
     def handle_underdog_fields(self):
+
+        def select_option(selection):
+            options = self.bot.driver.find_elements(By.TAG_NAME, "option")
+            for option in options:
+                option_name = option.get_attribute('textContent')
+                if option_name == selection:
+                    option.click()
+
         try:
             dropdowns = self.bot.driver.find_elements(By.CLASS_NAME, "div-block-37")
         
             for element in dropdowns:
                 element.click()
 
-                options = self.bot.driver.find_elements(
-                        By.TAG_NAME, "option")
+                options = self.bot.driver.find_elements(By.TAG_NAME, "option")
 
                 select_fields = self.bot.driver.find_elements(By.TAG_NAME, "select")
-
-                def select_option(selection):
-                    options = self.bot.driver.find_elements(By.TAG_NAME, "option")
-                    for option in options:
-                        option_name = option.get_attribute('textContent')
-                        if option_name == selection:
-                            option.click()
 
                 for select_field in select_fields:
                     select_field.click()
@@ -350,9 +350,10 @@ class Handler:
                             element.send_keys(self.bot.data['linkedIn'])
                         if "github" in field_name.lower() or "portfolio" in field_name.lower():
                             element.send_keys(self.bot.data['portfolio'])
+
         except BaseException as err:
-                print(err)
-                pass
+            print('Error: ', err)
+            raise Exception('Failed to complete underdog handling.')
         
     def handle_lever(self):
         try:
