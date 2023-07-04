@@ -40,10 +40,10 @@ class Handler:
                     self.handle_underdog_fields()
                     return
                 elif "lever" in job.get('apply'):
-                    self.handle_lever(data=self.bot.data, questions=self.bot.questions, driver=self.bot.driver)
+                    self.handle_lever()
                     return
                 elif "greenhouse" in job.get('apply'):
-                    self.handle_lever(data=self.bot.data, questions=self.bot.questions, driver=self.bot.driver)
+                    self.handle_greenhouse()
                     return
                 else:
                     parser.handle_fields()
@@ -354,10 +354,10 @@ class Handler:
                 print(err)
                 pass
         
-    def handle_lever(self, driver, data, questions):
+    def handle_lever(self):
         try:
             print('Running lever.co handler...')
-            elements = find_lever_elements(driver=driver)
+            elements = find_lever_elements(driver=self.bot.driver)
             print(f'{len(elements)} elements found.')
 
             # If no elements found, it's because I need to handle some interaction.
@@ -368,7 +368,7 @@ class Handler:
                     sleep(3)
 
                     # If button was clicked successfully, re-assign elements variable to newly found elements.
-                    elements = find_lever_elements(driver=driver)
+                    elements = find_lever_elements(driver=self.bot.driver)
                 except BaseException as err:
                     raise Exception('No elements found on page. Apply button not able to be clicked.')
 
@@ -381,7 +381,7 @@ class Handler:
                         element.click()
 
                     print('Handling lever fields...')
-                    handle_lever_fields(field_name, element, data, questions)
+                    handle_lever_fields(field_name, element, self.bot.data, self.bot.questions)
                 except BaseException as err:
                     print(f'Error handling field: {err}')
                     continue
@@ -392,34 +392,36 @@ class Handler:
     
     def handle_greenhouse(self):
         try:
-            # Get Fields
+            print('Running greenhouse handler...')
             dropdowns = self.bot.driver.find_elements(By.CLASS_NAME, "field")
 
             input_fields = find_fields_by_label(driver=self.bot.driver)
 
+            print(f'Handling {len(input_fields)} input fields...')
             for input_field in input_fields:
                 if "First" in input_field['label']:
                     if input_field['element'].get_attribute('value') == "":
-                        input_field['element'].send_keys(self.bot.data['user']['firstName'])
+                        input_field['element'].send_keys(self.bot.data['firstName'])
                 if "Last" in input_field['label']:
                     if input_field['element'].get_attribute('value') == "":
-                        input_field['element'].send_keys(self.bot.data['user']['lastName'])
+                        input_field['element'].send_keys(self.bot.data['lastName'])
                 if "Email" in input_field['label']:
                     if input_field['element'].get_attribute('value') == "":
-                        input_field['element'].send_keys(self.bot.data['user']['email'])
+                        input_field['element'].send_keys(self.bot.data['email'])
                 if "Phone" in input_field['label']:
                     if input_field['element'].get_attribute('value') == "":
-                        input_field['element'].send_keys(self.bot.data['user']['phoneNumber'])
+                        input_field['element'].send_keys(self.bot.data['phoneNumber'])
 
+            print(f'Handling {len(dropdowns)} dropdowns...')
             for element in dropdowns:
                 element.click()
-                field_name = element.find_element(By.XPATH, "./label").get_attribute('innerText')
+                field_name = element.find_element(By.TAG_NAME, "label").get_attribute('innerText')
 
                 if "School" or "Degree" or "Discipline" in field_name:
-                    handle_greenhouse_autocomplete(self.bot.driver, self.bot.data, field_name)
+                    handle_greenhouse_autocomplete(driver=self.bot.driver, data=self.bot.data, field_name=field_name)
                     sleep(1)
                 
-                handle_hidden_field(field_name, element, self.bot.driver, self.bot.data, self.bot.questions)
+                handle_hidden_field(field_name, element, driver=self.bot.driver, data=self.bot.data, questions=self.bot.questions)
         except BaseException as err:
             print(err)
             pass
