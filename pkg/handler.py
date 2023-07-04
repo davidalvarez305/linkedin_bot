@@ -295,8 +295,10 @@ class Handler:
                 element.click()
 
                 options = self.bot.driver.find_elements(By.TAG_NAME, "option")
+                print(f'{len(options)} options found.')
 
                 select_fields = self.bot.driver.find_elements(By.TAG_NAME, "select")
+                print(f'{len(select_fields)} select fields found.')
 
                 for select_field in select_fields:
                     select_field.click()
@@ -313,6 +315,7 @@ class Handler:
                         select_option("I am a U.S. citizen or a lawful permanent resident")
 
                 hidden_inputs = self.bot.driver.find_elements(By.CLASS_NAME, "autocomplete__input")
+                print(f'{len(hidden_inputs)} hidden inputs found.')
 
                 for input in hidden_inputs:
                     input_name = input.find_element(By.XPATH, ".//ancestor::label").get_attribute('textContent')
