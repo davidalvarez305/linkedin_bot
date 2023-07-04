@@ -36,7 +36,7 @@ class Handler:
                     sleep(5)
                     self.handle_smartrecruiters()
                     return
-                elif "underdog.io" in job.get('apply'):
+                elif "underdog" in job.get('apply'):
                     self.handle_underdog_fields()
                     return
                 elif "lever" in job.get('apply'):
