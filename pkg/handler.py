@@ -350,7 +350,7 @@ class Handler:
                 print(err)
                 pass
         
-    def handle_lever(driver, data, questions):
+    def handle_lever(self, driver, data, questions):
         try:
             elements = driver.find_elements(By.CLASS_NAME, "application-question")
 
