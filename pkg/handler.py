@@ -371,7 +371,7 @@ class Handler:
                     raise Exception('No elements found on page. Apply button not able to be clicked.')
 
             for element in elements:
-                field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
+                field_name =  element.find_element(By.NAME, "label").get_attribute('innerText')
 
                 if not "Resume" in field_name:
                     element.click()
