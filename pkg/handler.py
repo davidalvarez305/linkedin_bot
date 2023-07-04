@@ -37,7 +37,8 @@ class Handler:
                     self.handle_smartrecruiters()
                     return
                 elif "underdog" in job.get('apply'):
-                    self.handle_underdog_fields()
+                    # self.handle_underdog_fields()
+                    parser.handle_fields()
                     return
                 elif "lever" in job.get('apply'):
                     self.handle_lever()

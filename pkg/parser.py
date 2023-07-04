@@ -28,14 +28,18 @@ class Parser:
                     continue
 
     def find_form_fields(self):
+        form_elements = []
 
         tag_names = ['select', 'input', 'button', 'textarea']
 
         for tag in tag_names:
-            form_elements += self.driver.find_elements(By.TAG_NAME, tag)
+            if len(form_elements) > 0:
+                form_elements += self.driver.find_elements(By.TAG_NAME, tag)
+            else:
+                form_elements = self.driver.find_elements(By.TAG_NAME, tag)
 
         for element in form_elements:
-            field = self.get_element(element, self.questions)
+            field = self.get_element(element=element)
             if field:
                 self.fields.append(field)
 
@@ -49,7 +53,6 @@ class Parser:
             html_for = label.get_attribute('for')
             if html_for:
                 try:
-
                     field['label'] = label.get_attribute('innerText')
                     field['id'] = label.get_attribute('for')
 
@@ -58,14 +61,20 @@ class Parser:
                     field['element'] = input_field
 
                     self.fields.append(field)
-
                 except BaseException:
                     continue
 
     def handle_fields(self):
+        print('Handling generic fields...')
 
-        self.fields += self.find_fields_by_label()
-        self.fields += self.find_form_fields()
+        # Find fields and append to self.fields
+        self.find_fields_by_label()
+        self.find_form_fields()
+            
+        if len(self.fields) == 0:
+            raise Exception('No fields were found.')
+
+        print(f'{len(self.fields)} input fields found.')
 
         for field in self.fields:
                 # Handle Resume Upload

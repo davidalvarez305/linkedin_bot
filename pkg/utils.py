@@ -85,6 +85,8 @@ def handle_calendar_select(driver, user_data):
 def handle_pre_application_button(driver: WebDriver):
     try:
         buttons = driver.find_elements(By.TAG_NAME, 'a')
+        buttons += driver.find_elements(By.TAG_NAME, 'button')
+        print(f'{len(buttons)} buttons found for pre-application flow.')
 
         for button in buttons:
             button_text = button.get_attribute('textContent')
