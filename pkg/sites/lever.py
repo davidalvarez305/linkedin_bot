@@ -31,6 +31,18 @@ def handle_pre_application_button(driver: WebDriver):
             button_text = button.get_attribute('textContent')
             if button_text is not None and 'Apply' in button_text:
                 button.click()
+                return
 
     except BaseException as err:
         raise Exception(err)
+    
+def find_lever_elements(driver: WebDriver):
+    elements = driver.find_elements(By.CLASS_NAME, "application-question")
+
+    elements += driver.find_elements(By.CLASS_NAME, "custom-question")
+
+    elements += driver.find_elements(By.CLASS_NAME, "application-dropdown")
+
+    elements += driver.find_elements(By.CLASS_NAME, "application-additional")
+
+    return elements
