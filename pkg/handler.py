@@ -414,14 +414,19 @@ class Handler:
 
             print(f'Handling {len(dropdowns)} dropdowns...')
             for element in dropdowns:
-                element.click()
-                field_name = element.find_element(By.TAG_NAME, "label").get_attribute('innerText')
+                try:
+                    element.click()
+                    field_name = element.find_element(By.TAG_NAME, "label").get_attribute('innerText')
 
-                if "School" or "Degree" or "Discipline" in field_name:
-                    handle_greenhouse_autocomplete(driver=self.bot.driver, data=self.bot.data, field_name=field_name)
-                    sleep(1)
-                
-                handle_hidden_field(field_name, element, driver=self.bot.driver, data=self.bot.data, questions=self.bot.questions)
+                    if "School" or "Degree" or "Discipline" in field_name:
+                        handle_greenhouse_autocomplete(driver=self.bot.driver, data=self.bot.data, field_name=field_name)
+                        sleep(1)
+                    
+                    handle_hidden_field(field_name, element, driver=self.bot.driver, data=self.bot.data, questions=self.bot.questions)
+                except BaseException as err:
+                    print(f'Error handling field: {err}')
+                    continue
+
         except BaseException as err:
-            print(err)
-            pass
+            print('Error: ', err)
+            raise Exception('Failed to complete greenhouse handling.')
