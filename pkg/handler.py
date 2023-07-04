@@ -278,6 +278,7 @@ class Handler:
             pass
 
     def handle_underdog_fields(self):
+        print('Handling underdog...')
 
         def select_option(selection):
             options = self.bot.driver.find_elements(By.TAG_NAME, "option")
@@ -288,6 +289,7 @@ class Handler:
 
         try:
             dropdowns = self.bot.driver.find_elements(By.CLASS_NAME, "div-block-37")
+            print(f'{len(dropdowns)} dropdowns found.')
         
             for element in dropdowns:
                 element.click()
