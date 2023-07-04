@@ -3,7 +3,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from pkg.list import COMMON_QUESTIONS
 from pkg.sites.bamboo import handle_select_div
-from pkg.sites.lever import handle_lever_fields
+from pkg.sites.lever import handle_lever_fields, handle_pre_application_button
 from pkg.sites.underdog import auto_complete
 
 from pkg.sites.workdayjobs import click_add_fields, click_hidden_button, click_save_and_continue, enter_login, get_correct_year, handle_inputs, perform_action
@@ -14,7 +14,7 @@ class Handler:
         self.bot = bot
 
     def is_completed(self):
-        val = input("Press any key to re-try: ")
+        val = input("Press any key to re-try, other press Enter: ")
         if len(val) > 0:
             return False
         return True
@@ -39,7 +39,7 @@ class Handler:
                     self.handle_underdog_fields()
                     return
                 elif "lever" in job.get('apply'):
-                    self.handle_lever(data=self.bot.data, questions=self.bot.questions)
+                    self.handle_lever(data=self.bot.data, questions=self.bot.questions, driver=self.bot.driver)
                     return
                 else:
                     parser.handle_fields()
@@ -352,6 +352,7 @@ class Handler:
         
     def handle_lever(self, driver, data, questions):
         try:
+            print('Running lever.co handler...')
             elements = driver.find_elements(By.CLASS_NAME, "application-question")
 
             elements += driver.find_elements(By.CLASS_NAME, "custom-question")
@@ -359,6 +360,15 @@ class Handler:
             elements += driver.find_elements(By.CLASS_NAME, "application-dropdown")
 
             elements += driver.find_elements(By.CLASS_NAME, "application-additional")
+            print(f'{len(elements)} elements found.')
+
+            # If no elements found, it's because I need to handle some interaction.
+            if len(elements) == 0:
+                try:
+                    # Try to see if application button is found, if not raise exception.
+                    handle_pre_application_button()
+                except BaseException as err:
+                    raise Exception('No elements found on page. Apply button not able to be clicked.')
 
             for element in elements:
                 field_name =  element.find_element(By.XPATH, "./label").get_attribute('innerText')
@@ -366,7 +376,8 @@ class Handler:
                 if not "Resume" in field_name:
                     element.click()
 
+                print('Handling lever fields...')
                 handle_lever_fields(field_name, element, data, questions)
         except BaseException as err:
-            print(err)
-            pass
+            print('Error: ', err)
+            raise Exception('Failed to complete lever handling.')

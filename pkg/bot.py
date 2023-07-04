@@ -125,6 +125,8 @@ class Bot:
             except BaseException as err:
                 print("err: ", err)
                 continue
+        
+        self.driver.close()
 
     def save_jobs(self):
         rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('JOBS_TAB')}!A:E")
