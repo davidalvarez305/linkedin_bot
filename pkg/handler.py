@@ -373,14 +373,15 @@ class Handler:
             print('Handling elements...')
             for element in elements:
                 try:
-                    field_name =  element.find_element(By.NAME, "label").get_attribute('innerText')
+                    field_name =  element.find_element(By.TAG_NAME, "label").get_attribute('innerText')
 
                     if not "Resume" in field_name:
                         element.click()
 
                     print('Handling lever fields...')
                     handle_lever_fields(field_name, element, data, questions)
-                except BaseException:
+                except BaseException as err:
+                    print(f'Error handling field: {err}')
                     continue
 
         except BaseException as err:
