@@ -25,10 +25,12 @@ def handle_lever_fields(field_name, element, data, questions):
 
 def handle_pre_application_button(driver: WebDriver):
     try:
-        apply_button = driver.find_element(By.CLASS_NAME, 'postings-btn template-btn-submit hex-color')
-        button_text = apply_button.get_attribute('textContent')
+        buttons = driver.find_elements(By.TAG_NAME, 'a')
 
-        if button_text is not None and 'Apply' in button_text:
-            apply_button.click()
+        for button in buttons:
+            button_text = button.get_attribute('textContent')
+            if button_text is not None and 'Apply' in button_text:
+                button.click()
+
     except BaseException as err:
         raise Exception(err)
