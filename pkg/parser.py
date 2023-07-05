@@ -1,4 +1,4 @@
-from selenium.webdriver.remote.webdriver import WebElement, WebDriver
+from selenium.webdriver.remote.webdriver import WebElement
 from selenium.webdriver.common.by import By
 from time import sleep
 
@@ -77,6 +77,7 @@ class Parser:
         print(f'{len(self.fields)} input fields found.')
 
         for field in self.fields:
+            try:
                 # Handle Resume Upload
                 if field['tagName'] == 'BUTTON':
                     resume_fields = [
@@ -118,3 +119,7 @@ class Parser:
                         if any(substr in field['label'].lower() for substr in question['question']):
                             if field['element'].get_attribute('value') == "":
                                 field['element'].send_keys(self.data[f"{question['data']}"])
+
+            except Exception as err:
+                print(err)
+                continue
