@@ -56,18 +56,20 @@ class Handler:
                     continue
     
     def handle_workdayjobs(self):
-        self.bot.driver.get(self.bot.data['apply'])
+        print('Handling workday jobs...')
 
         WebDriverWait(self.bot.driver, timeout=10).until(
             lambda d: d.find_element(By.TAG_NAME, "html"))
         sleep(2)
 
+        print('Creating account...')
         # Navigate to Create Account & Create Account
         click_hidden_button(self.bot.driver, '//button[@data-automation-id="createAccountLink"]')
 
         # enter_login(self.bot.driver, '//button[@data-automation-id="createAccountSubmitButton"]')
         input("Verify email and come back: ")
 
+        print('Back to sign in screen...')
         # Return to Sign In Screen
         click_hidden_button(self.bot.driver, '//button[@data-automation-id="signInLink"]')
 

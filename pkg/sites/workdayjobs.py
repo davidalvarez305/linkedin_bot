@@ -11,31 +11,37 @@ def click_hidden_button(driver, btn_xpath):
         submit_button = driver.find_element(By.XPATH, btn_xpath)
         actions = ActionChains(driver=driver)
         actions.move_to_element(submit_button).click().perform()
-    except BaseException:
-        pass
+    except BaseException as err:
+        raise(err)
 
 
 def enter_login(driver, btn_xpath, data):
-    form = driver.find_element(By.TAG_NAME, 'form')
+    try:
+        form = driver.find_element(By.TAG_NAME, 'form')
 
-    elements = form.find_elements(By.XPATH, './*')
+        elements = form.find_elements(By.XPATH, './*')
 
-    for element in elements:
-        try:
-            label = element.find_element(
-                By.TAG_NAME, "label").get_attribute('innerText')
-            input = element.find_element(By.TAG_NAME, 'input')
+        if len(elements) == 0:
+            raise Exception('No elements found for login.')
 
-            if "Email" in label:
-                input.send_keys(data['email'])
+        for element in elements:
+            try:
+                label = element.find_element(By.TAG_NAME, "label").get_attribute('innerText')
+                input = element.find_element(By.TAG_NAME, 'input')
 
-            if "Password" in label:
-                input.send_keys(data['password'])
+                if "Email" in label:
+                    input.send_keys(data['email'])
 
-        except BaseException:
-            continue
+                if "Password" in label:
+                    input.send_keys(data['password'])
 
-    click_hidden_button(driver, btn_xpath)
+            except BaseException as err:
+                print(f'Error trying to enter login: {err}')
+                continue
+
+        click_hidden_button(driver, btn_xpath)
+    except BaseException as err:
+        raise(f'Error trying to login: {err}')
 
 
 def select_options(driver, attr, input_id):
@@ -60,29 +66,31 @@ def select_options(driver, attr, input_id):
                     el.click()
                     break
     except BaseException as err:
-        print(err)
+        raise Exception(f'Error selecting options: {err}')
 
 
 def handle_multiple_input(driver, element, skills):
+    try:
+        def handle_multi_select(skill, options):
+            for option in options:
+                if skill in option.get_attribute('innerText'):
+                    option.click()
+                    return skill
+            
+            return ""
 
-    def handle_multi_select(skill, options):
-        for option in options:
-            if skill in option.get_attribute('innerText'):
-                option.click()
-                return skill
-        
-        return ""
+        for skill in skills:
+            element.send_keys(skill)
+            element.send_keys(Keys.RETURN)
+            sleep(0.5)
 
-    for skill in skills:
-        element.send_keys(skill)
-        element.send_keys(Keys.RETURN)
-        sleep(0.5)
-
-        options = driver.find_elements(By.XPATH, '//*[@data-automation-id="promptOption"]')
-        if len(options) > 0:
-            selected = handle_multi_select(skill=skill, options=options)
-            if selected == "":
-                element.send_keys(Keys.CLEAR)
+            options = driver.find_elements(By.XPATH, '//*[@data-automation-id="promptOption"]')
+            if len(options) > 0:
+                selected = handle_multi_select(skill=skill, options=options)
+                if selected == "":
+                    element.send_keys(Keys.CLEAR)
+    except BaseException as err:
+        raise Exception(f'Error handling multiple input: {err}')
 
 
 def handle_inputs(driver, data):
@@ -229,86 +237,3 @@ def click_add_fields(driver):
             btn.click()
         except BaseException as err:
             print(err)
-
-def handle_workdayjobs(driver, data):
-    driver.get(data['apply'])
-
-    WebDriverWait(driver, timeout=10).until(
-        lambda d: d.find_element(By.TAG_NAME, "html"))
-    sleep(2)
-
-    # Navigate to Create Account & Create Account
-    click_hidden_button(driver, '//button[@data-automation-id="createAccountLink"]')
-
-    # enter_login(driver, '//button[@data-automation-id="createAccountSubmitButton"]', data)
-    input("Verify email and come back: ")
-
-    # Return to Sign In Screen
-    click_hidden_button(driver, '//button[@data-automation-id="signInLink"]')
-
-    # Submit & Verify Email -- Then Login
-    enter_login(driver, '//button[@data-automation-id="signInSubmitButton"]', data)
-    sleep(5)
-
-    # Apply Manually
-    click_hidden_button(driver, '//*[@data-automation-id="applyManually"]')
-    sleep(5)
-
-    # Enter Fields
-    handle_inputs(driver, data)
-
-    # Save & Continue
-    click_save_and_continue(driver)
-
-    # Click Add Work & Education Experience
-    click_add_fields(driver)
-
-    # Click "I Currently Work Here"
-    perform_action(driver, '//input[@data-automation-id="currentlyWorkHere"]', "click")
-
-    # Click Calendar for Dates & Handle Dates
-    perform_action(driver, '//*[@data-automation-id="dateIcon"]', "click")
-    get_correct_year(driver, data)
-
-    months = driver.find_elements(By.TAG_NAME, 'li')
-
-    for month in months:
-        if month.get_attribute('innerText') == "Nov":
-            month.click()
-            break
-
-    # Upload Resume
-    perform_action(driver, '//input[@data-automation-id="file-upload-input-ref"]', "send keys", keys=data['resume'])
-
-    # Add Websites
-    perform_action(driver, '//input[@data-automation-id="website"]', "send keys", keys=data['github'])
-
-    # Add LinkedIn
-    perform_action(driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", keys=data['linkedin'])
-
-    handle_inputs(driver, data)
-
-    # Save & Continue
-    click_save_and_continue(driver)
-
-    # Handle Application Questions
-    handle_inputs(driver, data)
-
-    # Save & Continue
-    click_save_and_continue(driver)
-
-    # Handle Voluntary Disclosures
-    handle_inputs(driver, data)
-
-    # Save & Continue
-    click_save_and_continue(driver)
-
-    # Handle Self-Identify
-    handle_inputs(driver, data)
-
-    # Select Today's Date
-    perform_action(driver, '//*[@data-automation-id="dateIcon"]', "click")
-    perform_action(driver, '//*[@aria-selected="true"]', "click")
-
-    # Save & Continue
-    click_save_and_continue(driver)
