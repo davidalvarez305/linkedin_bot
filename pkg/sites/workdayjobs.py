@@ -92,27 +92,27 @@ def handle_multiple_input(driver, element, skills):
     except BaseException as err:
         raise Exception(f'Error handling multiple input: {err}')
 
+def input_field(element, user_data):
+    try:
+        if element.get_attribute('value') == "":
+            element.send_keys(user_data)
+    except BaseException as err:
+        raise Exception(f'Error during input_field : {err}')
 
 def handle_inputs(driver, data):
     elements = driver.find_elements(By.TAG_NAME, 'input')
     elements += driver.find_elements(By.TAG_NAME, 'button')
     elements += driver.find_elements(By.TAG_NAME, 'textarea')
 
-    def input_field(element, user_data):
-        try:
-            if element.get_attribute('value') == "":
-                element.send_keys(user_data)
-        except BaseException:
-            pass
-
+    if len(elements) == 0:
+        raise Exception('No elements found.')
 
     for el in elements:
         try:
             if el.get_attribute('tagName') == "INPUT" or el.get_attribute('tagName') == "TEXTAREA":
                 input_id = el.get_attribute('id')
                 if len(input_id) > 0:
-                    label = driver.find_element(
-                        By.XPATH, f'//label[@for="{input_id}"]').get_attribute('innerText')
+                    label = driver.find_element(By.XPATH, f'//label[@for="{input_id}"]').get_attribute('innerText')
 
                     if "No" in label:
                         el.click()
@@ -186,28 +186,24 @@ def handle_inputs(driver, data):
                     if any(sub_str in label for sub_str in NO_APPLICATION_QUESTIONS):
                         select_options(driver=driver, input_id=input_id,
                                        attr="No")
-        except BaseException:
+        except BaseException as err:
+            print(f'Error inputting user data: {err}')
             continue
 
 
 def get_correct_year(driver, data):
     try:
-        year = driver.find_element(
-            By.XPATH, '//*[@data-automation-id="monthPickerSpinnerLabel"]').get_attribute('innerText')
+        year = driver.find_element(By.XPATH, '//*[@data-automation-id="monthPickerSpinnerLabel"]').get_attribute('innerText')
         while int(data['jobStartYear']) < int(year):
-            driver.find_element(
-                By.XPATH, '//*[@aria-label="Previous Year"]').click()
-            current_year = driver.find_element(
-                By.XPATH, '//*[@data-automation-id="monthPickerSpinnerLabel"]').get_attribute('innerText')
+            driver.find_element(By.XPATH, '//*[@aria-label="Previous Year"]').click()
+            current_year = driver.find_element(By.XPATH, '//*[@data-automation-id="monthPickerSpinnerLabel"]').get_attribute('innerText')
             year = current_year
     except BaseException as err:
-        print(err)
-
+        raise Exception(f'Error getting correct year: {err}')
 
 def click_save_and_continue(driver):
     try:
-        driver.find_element(
-        By.XPATH, '//button[@data-automation-id="bottom-navigation-next-button"]').click()
+        driver.find_element(By.XPATH, '//button[@data-automation-id="bottom-navigation-next-button"]').click()
         sleep(3)
 
         error = driver.find_elements(By.XPATH, '//*[@data-automation-id="errorBanner"]')
@@ -215,7 +211,7 @@ def click_save_and_continue(driver):
         if len(error) > 0:
             input("Handle the error & press enter.")
     except BaseException as err:
-        print(err)
+        raise Exception(f'Error while trying to save: {err}')
 
 def perform_action(driver, xpath, action, *args, **kwargs):
     try:
@@ -227,13 +223,18 @@ def perform_action(driver, xpath, action, *args, **kwargs):
             keys = kwargs.get('keys')
             element.send_keys(keys)
 
-    except BaseException:
-        pass
+    except BaseException as err:
+        raise Exception(f'Error while trying to perform action - {action}: {err}')
 
 def click_add_fields(driver):
     add_btns = driver.find_elements(By.XPATH, '//*[@data-automation-id="Add"]')
+
+    if len(add_btns) == 0:
+        raise Exception('No ADD buttons found.')
+
     for btn in add_btns:
         try:
             btn.click()
         except BaseException as err:
             print(err)
+            continue

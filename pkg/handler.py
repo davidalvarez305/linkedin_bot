@@ -74,7 +74,7 @@ class Handler:
         click_hidden_button(self.bot.driver, '//button[@data-automation-id="signInLink"]')
 
         # Submit & Verify Email -- Then Login
-        enter_login(self.bot.driver, '//button[@data-automation-id="signInSubmitButton"]')
+        enter_login(self.bot.driver, '//button[@data-automation-id="signInSubmitButton"]', self.bot.data)
         sleep(5)
 
         # Apply Manually
@@ -82,7 +82,7 @@ class Handler:
         sleep(5)
 
         # Enter Fields
-        handle_inputs(self.bot.driver)
+        handle_inputs(self.bot.driver, self.bot.data)
 
         # Save & Continue
         click_save_and_continue(self.bot.driver)
@@ -95,7 +95,7 @@ class Handler:
 
         # Click Calendar for Dates & Handle Dates
         perform_action(self.bot.driver, '//*[@data-automation-id="dateIcon"]', "click")
-        get_correct_year(self.bot.driver)
+        get_correct_year(self.bot.driver, self.bot.data)
 
         months = self.bot.driver.find_elements(By.TAG_NAME, 'li')
 
@@ -113,25 +113,25 @@ class Handler:
         # Add LinkedIn
         perform_action(self.bot.driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", keys=self.bot.data['linkedin'])
 
-        handle_inputs(self.bot.driver)
+        handle_inputs(self.bot.driver, self.bot.data)
 
         # Save & Continue
         click_save_and_continue(self.bot.driver)
 
         # Handle Application Questions
-        handle_inputs(self.bot.driver)
+        handle_inputs(self.bot.driver, self.bot.data)
 
         # Save & Continue
         click_save_and_continue(self.bot.driver)
 
         # Handle Voluntary Disclosures
-        handle_inputs(self.bot.driver)
+        handle_inputs(self.bot.driver, self.bot.data)
 
         # Save & Continue
         click_save_and_continue(self.bot.driver)
 
         # Handle Self-Identify
-        handle_inputs(self.bot.driver)
+        handle_inputs(self.bot.driver, self.bot.data)
 
         # Select Today's Date
         perform_action(self.bot.driver, '//*[@data-automation-id="dateIcon"]', "click")
