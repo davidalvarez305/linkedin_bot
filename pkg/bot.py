@@ -5,6 +5,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import urllib3
 from pkg.parser import Parser
 
 from pkg.handler import Handler
@@ -55,12 +56,12 @@ class Bot:
     def crawl_jobs(self, keyword):
         # Initialize Driver
         self.driver = webdriver.Firefox()
-        self.driver.get("https://www.linkedin.com/login")
+        self.driver.get("https://www.linkedin.com/jobs/search/?f_E=2%2C3&f_WT=2&keywords=software%20developer")
 
-        input("Press enter after logging in: ")
+        # input("Press enter after logging in: ")
 
         # Access Job Search
-        go_to_jobs_search(driver=self.driver, keyword=keyword)
+        # go_to_jobs_search(driver=self.driver, keyword=keyword)
 
         sleep(5)
         current_page = 1
