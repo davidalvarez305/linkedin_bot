@@ -5,6 +5,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebElement, WebDriver
+import urllib3
 
 def login(driver):
     # Get Input Fields
@@ -38,12 +39,12 @@ def find_jobs_button(driver):
 
 def go_to_jobs_search(driver, keyword):
     try:
-        search_input = driver.find_element(
-            By.XPATH, '//input[@placeholder="Search"]')
-        search_input.send_keys(keyword)
-        search_input.send_keys(Keys.RETURN)
+        driver.get("https://www.linkedin.com/jobs/search/?f_E=2%2C3&keywords=" + urllib3.parse.urlencode(keyword))
+        # search_input = driver.find_element(By.XPATH, '//input[@placeholder="Search"]')
+        # search_input.send_keys(keyword)
+        # search_input.send_keys(Keys.RETURN)
         sleep(4)
-        find_jobs_button(driver)
+        # find_jobs_button(driver)
     except BaseException:
         input("Press enter after looking up jobs: ")
         pass
