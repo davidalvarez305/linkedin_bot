@@ -58,87 +58,90 @@ class Handler:
     def handle_workdayjobs(self):
         print('Handling workday jobs...')
 
-        WebDriverWait(self.bot.driver, timeout=10).until(
+        try:
+            WebDriverWait(self.bot.driver, timeout=10).until(
             lambda d: d.find_element(By.TAG_NAME, "html"))
-        sleep(2)
+            sleep(2)
 
-        print('Creating account...')
-        # Navigate to Create Account & Create Account
-        click_hidden_button(self.bot.driver, '//button[@data-automation-id="createAccountLink"]')
+            print('Creating account...')
+            # Navigate to Create Account & Create Account
+            click_hidden_button(self.bot.driver, '//button[@data-automation-id="createAccountLink"]')
 
-        enter_login(self.bot.driver, '//button[@data-automation-id="createAccountSubmitButton"]', self.bot.data)
-        input("Verify email and come back: ")
+            enter_login(self.bot.driver, '//button[@data-automation-id="createAccountSubmitButton"]', self.bot.data)
+            input("Verify email and come back: ")
 
-        print('Back to sign in screen...')
-        # Return to Sign In Screen
-        click_hidden_button(self.bot.driver, '//button[@data-automation-id="signInLink"]')
+            print('Back to sign in screen...')
+            # Return to Sign In Screen
+            click_hidden_button(self.bot.driver, '//button[@data-automation-id="signInLink"]')
 
-        # Submit & Verify Email -- Then Login
-        enter_login(self.bot.driver, '//button[@data-automation-id="signInSubmitButton"]', self.bot.data)
-        sleep(5)
+            # Submit & Verify Email -- Then Login
+            enter_login(self.bot.driver, '//button[@data-automation-id="signInSubmitButton"]', self.bot.data)
+            sleep(5)
 
-        # Apply Manually
-        click_hidden_button(self.bot.driver, '//*[@data-automation-id="applyManually"]')
-        sleep(5)
+            # Apply Manually
+            click_hidden_button(self.bot.driver, '//*[@data-automation-id="applyManually"]')
+            sleep(5)
 
-        # Enter Fields
-        handle_inputs(self.bot.driver, self.bot.data)
+            # Enter Fields
+            handle_inputs(self.bot.driver, self.bot.data)
 
-        # Save & Continue
-        click_save_and_continue(self.bot.driver)
+            # Save & Continue
+            click_save_and_continue(self.bot.driver)
 
-        # Click Add Work & Education Experience
-        click_add_fields(self.bot.driver)
+            # Click Add Work & Education Experience
+            click_add_fields(self.bot.driver)
 
-        # Click "I Currently Work Here"
-        perform_action(self.bot.driver, '//input[@data-automation-id="currentlyWorkHere"]', "click")
+            # Click "I Currently Work Here"
+            perform_action(self.bot.driver, '//input[@data-automation-id="currentlyWorkHere"]', "click")
 
-        # Click Calendar for Dates & Handle Dates
-        perform_action(self.bot.driver, '//*[@data-automation-id="dateIcon"]', "click")
-        get_correct_year(self.bot.driver, self.bot.data)
+            # Click Calendar for Dates & Handle Dates
+            perform_action(self.bot.driver, '//*[@data-automation-id="dateIcon"]', "click")
+            get_correct_year(self.bot.driver, self.bot.data)
 
-        months = self.bot.driver.find_elements(By.TAG_NAME, 'li')
+            months = self.bot.driver.find_elements(By.TAG_NAME, 'li')
 
-        for month in months:
-            if month.get_attribute('innerText') == "Nov":
-                month.click()
-                break
+            for month in months:
+                if month.get_attribute('innerText') == "Nov":
+                    month.click()
+                    break
 
-        # Upload Resume
-        perform_action(self.bot.driver, '//input[@data-automation-id="file-upload-input-ref"]', "send keys", keys=self.bot.data['resume'])
+            # Upload Resume
+            perform_action(self.bot.driver, '//input[@data-automation-id="file-upload-input-ref"]', "send keys", keys=self.bot.data['resume'])
 
-        # Add Websites
-        perform_action(self.bot.driver, '//input[@data-automation-id="website"]', "send keys", keys=self.bot.data['github'])
+            # Add Websites
+            perform_action(self.bot.driver, '//input[@data-automation-id="website"]', "send keys", keys=self.bot.data['github'])
 
-        # Add LinkedIn
-        perform_action(self.bot.driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", keys=self.bot.data['linkedin'])
+            # Add LinkedIn
+            perform_action(self.bot.driver, '//input[@data-automation-id="linkedinQuestion"]', "send keys", keys=self.bot.data['linkedin'])
 
-        handle_inputs(self.bot.driver, self.bot.data)
+            handle_inputs(self.bot.driver, self.bot.data)
 
-        # Save & Continue
-        click_save_and_continue(self.bot.driver)
+            # Save & Continue
+            click_save_and_continue(self.bot.driver)
 
-        # Handle Application Questions
-        handle_inputs(self.bot.driver, self.bot.data)
+            # Handle Application Questions
+            handle_inputs(self.bot.driver, self.bot.data)
 
-        # Save & Continue
-        click_save_and_continue(self.bot.driver)
+            # Save & Continue
+            click_save_and_continue(self.bot.driver)
 
-        # Handle Voluntary Disclosures
-        handle_inputs(self.bot.driver, self.bot.data)
+            # Handle Voluntary Disclosures
+            handle_inputs(self.bot.driver, self.bot.data)
 
-        # Save & Continue
-        click_save_and_continue(self.bot.driver)
+            # Save & Continue
+            click_save_and_continue(self.bot.driver)
 
-        # Handle Self-Identify
-        handle_inputs(self.bot.driver, self.bot.data)
+            # Handle Self-Identify
+            handle_inputs(self.bot.driver, self.bot.data)
 
-        # Select Today's Date
-        perform_action(self.bot.driver, '//*[@data-automation-id="dateIcon"]', "click")
-        perform_action(self.bot.driver, '//*[@aria-selected="true"]', "click")
+            # Select Today's Date
+            perform_action(self.bot.driver, '//*[@data-automation-id="dateIcon"]', "click")
+            perform_action(self.bot.driver, '//*[@aria-selected="true"]', "click")
 
-        # Save & Continue
-        click_save_and_continue(self.bot.driver)
+            # Save & Continue
+            click_save_and_continue(self.bot.driver)
+        except BaseException as err:
+            raise(f'Failed to handle WorkDayJobs: {err}')
     
     def handle_smartrecruiters(self):
         sleep(1)

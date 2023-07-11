@@ -48,6 +48,7 @@ def enter_login(driver, btn_xpath, data):
                 continue
 
         click_hidden_button(driver, btn_xpath)
+        sleep(2)
 
         error_message = driver.find_elements(By.XPATH, '//div[@data-automation-id="errorMessage"]')
 
