@@ -48,9 +48,14 @@ def enter_login(driver, btn_xpath, data):
                 continue
 
         click_hidden_button(driver, btn_xpath)
+
+        error_message = driver.find_elements(By.XPATH, '//div[@data-automation-id="errorMessage"]')
+
+        if len(error_message) > 0:
+            raise('Application for this job listing has already happened.')
+
     except BaseException as err:
         raise(f'Error trying to login: {err}')
-
 
 def select_options(driver, attr, input_id):
     try:
