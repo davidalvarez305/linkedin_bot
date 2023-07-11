@@ -66,7 +66,7 @@ class Handler:
         # Navigate to Create Account & Create Account
         click_hidden_button(self.bot.driver, '//button[@data-automation-id="createAccountLink"]')
 
-        # enter_login(self.bot.driver, '//button[@data-automation-id="createAccountSubmitButton"]')
+        enter_login(self.bot.driver, '//button[@data-automation-id="createAccountSubmitButton"]', self.bot.data)
         input("Verify email and come back: ")
 
         print('Back to sign in screen...')

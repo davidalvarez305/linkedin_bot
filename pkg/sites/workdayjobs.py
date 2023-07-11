@@ -20,20 +20,28 @@ def enter_login(driver, btn_xpath, data):
         form = driver.find_element(By.TAG_NAME, 'form')
 
         elements = form.find_elements(By.XPATH, './*')
+                
+        elements += form.find_elements(By.XPATH, '//input[@data-automation-id="createAccountCheckbox"]')
 
         if len(elements) == 0:
             raise Exception('No elements found for login.')
 
         for element in elements:
             try:
+
+                # This element has no label, so in order to prevent an error, continue to next if it's been found
+                if element.get_attribute('type') == "checkbox":
+                    field_input.click()
+                    continue
+
                 label = element.find_element(By.TAG_NAME, "label").get_attribute('innerText')
-                input = element.find_element(By.TAG_NAME, 'input')
+                field_input = element.find_element(By.TAG_NAME, 'input')
 
                 if "Email" in label:
-                    input.send_keys(data['email'])
+                    field_input.send_keys(data['email'])
 
                 if "Password" in label:
-                    input.send_keys(data['password'])
+                    field_input.send_keys(data['workday_password'])
 
             except BaseException as err:
                 print(f'Error trying to enter login: {err}')
