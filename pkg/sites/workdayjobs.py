@@ -12,7 +12,7 @@ def click_hidden_button(driver, btn_xpath):
         actions = ActionChains(driver=driver)
         actions.move_to_element(submit_button).click().perform()
     except BaseException as err:
-        raise(err)
+        raise Exception(f'Error trying to create submit button: {err}')
 
 
 def enter_login(driver, btn_xpath, data):
@@ -56,7 +56,7 @@ def enter_login(driver, btn_xpath, data):
             raise('Application for this job listing has already happened.')
 
     except BaseException as err:
-        raise(f'Error trying to login: {err}')
+        raise Exception(f'Error trying to login: {err}')
 
 def select_options(driver, attr, input_id):
     try:
