@@ -53,10 +53,11 @@ def enter_login(driver, btn_xpath, data):
         error_message = driver.find_elements(By.XPATH, '//div[@data-automation-id="errorMessage"]')
 
         if len(error_message) > 0:
-            raise('Application for this job listing has already happened.')
+            raise Exception('Application for this job listing has already happened.')
 
     except BaseException as err:
-        raise Exception(f'Error trying to login: {err}')
+        print("Error: ", err)
+        raise Exception('Error trying to login into WorkDayJobs.')
 
 def select_options(driver, attr, input_id):
     try:
