@@ -5,13 +5,13 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import urllib3
 from pkg.parser import Parser
 
 from pkg.handler import Handler
 from. helpers.sheets import get_values, write_values
 
-from .sites.linkedin import extract_job_data, go_to_jobs_search
+from .sites.linkedin import extract_job_data
+from urllib.parse import quote
 
 def read_data_from_json():
     file_path = os.path.join(os.getcwd(), "data.json")
@@ -54,24 +54,32 @@ class Bot:
             raise Exception("Data from JSON file could not be loaded.")
 
     def crawl_jobs(self, keyword):
-        # Initialize Driver
-        self.driver = webdriver.Firefox()
-        self.driver.get("https://www.linkedin.com/jobs/search/?f_E=2%2C3&f_WT=2&keywords=software%20developer")
 
-        # input("Press enter after logging in: ")
+        try:
+            # Initialize Driver
+            self.driver = webdriver.Firefox()
+            self.driver.get(f"https://www.linkedin.com/jobs/search/?f_E=2%2C3&f_WT=2&keywords={quote(keyword)}")
 
-        # Access Job Search
-        # go_to_jobs_search(driver=self.driver, keyword=keyword)
+            i = 500
+            n = 0
 
-        sleep(5)
-        current_page = 1
+            # First scroll to the bottom of the page so that all of the potential job listings are available
+            while(i < 2000):
+                try:
+                    self.driver.execute_script(f'window.scrollBy({n}, {i})')
+                    n = i
+                    i += 500
+                    sleep(2)
 
-        while (current_page < 40):
+                    see_more_jobs = self.driver.find_element(By.XPATH, '//button[@data-tracking-control-name="infinite-scroller_show-more"]')
+                    see_more_jobs.click()
+
+                except BaseException as err:
+                    continue
+
+            # Now, actually save the jobs
             try:
-                pages_list = self.driver.find_element(By.CSS_SELECTOR, 'ul.artdeco-pagination__pages.artdeco-pagination__pages--number')
-                pg_buttons = pages_list.find_elements(By.TAG_NAME, 'li')
-
-                jobs_container = self.driver.find_element(By.CLASS_NAME, 'scaffold-layout__list-container')
+                jobs_container = self.driver.find_element(By.CLASS_NAME, 'jobs-search__results-list')
                 jobs = jobs_container.find_elements(By.TAG_NAME, 'li')
 
                 for job in jobs:
@@ -85,28 +93,18 @@ class Bot:
                         self.jobs.append(job_data)
                     except BaseException as err:
                         print("ERROR FINDING JOB: ", err)
-                    finally:
                         continue
-
-                for index, btn in enumerate(pg_buttons):
-                    if int(btn.get_attribute('data-test-pagination-page-btn')) == current_page + 1:
-                        btn.click()
-                        sleep(5)
-            except BaseException as err:
-                # Only click the tree dots if the previous index was not one, otherwise, we'll keep circling back.
-                if "int() argument must be a string" in err.__str__() and int(pg_buttons[index - 1].get_attribute('data-test-pagination-page-btn')) != 1:
-                    btn.click()
-                    sleep(5)
-                else:
-                    print(err)
-            finally:
-                current_page += 1
-
+            
                 self.save_jobs()
 
                 # After jobs are saved in Google Sheets -> reset the list so that they're not saved twice
                 self.jobs = []
-                continue
+
+            except BaseException as err:
+                raise Exception(f'Failed to find jobs: {err}')
+
+        except BaseException as err:
+            raise Exception(f'Failed to while crawling: {err}')
 
     def apply_to_jobs(self):
 
