@@ -46,12 +46,12 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
             if card['card'] == 'apply':
                 apply_button = web_element.find_element(card['by'], card['search_string'])
                 apply_button.click()
-                sleep(2)
+                sleep(1)
 
                 # Deal with 'sign up' popup
                 x_button_popup = driver.find_element(By.XPATH, '//button[@data-tracking-control-name="public_jobs_apply-link-offsite_sign-up-modal_modal_dismiss"]')
                 x_button_popup.click()
-                sleep(3)
+                sleep(2)
 
                 # Get link from newly open window, then close it.
                 driver.switch_to.window(driver.window_handles[1])
