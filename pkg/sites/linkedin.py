@@ -5,49 +5,6 @@ from time import sleep
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebElement, WebDriver
-import urllib3
-
-def login(driver):
-    # Get Input Fields
-    username_input = driver.find_element(By.ID, "session_key")
-    password_input = driver.find_element(By.ID, "session_password")
-
-    # Enter Input
-    simulate_typing(username_input, os.environ.get('EMAIL'))
-    username_input.send_keys(Keys.TAB)
-    sleep(1)
-    simulate_typing(password_input, os.environ.get('LINKEDIN_PASSWORD'))
-    sleep(1)
-    password_input.send_keys(Keys.RETURN)
-
-def simulate_typing(element, txt):
-    for letter in txt:
-        sleep(uniform(0.0250, 0.25))
-        element.send_keys(letter)
-
-def find_jobs_button(driver):
-    try:
-        filters = driver.find_elements(By.XPATH, '//*[@class="search-reusables__primary-filter"]')
-
-        for filter in filters:
-            btn = filter.find_element(By.TAG_NAME, 'button')
-            if "Jobs" in btn.get_attribute('innerText'):
-                btn.click()
-    except BaseException:
-        input("Press enter after looking up jobs: ")
-        pass
-
-def go_to_jobs_search(driver, keyword):
-    try:
-        driver.get("https://www.linkedin.com/jobs/search/?f_E=2%2C3&keywords=" + urllib3.parse.urlencode(keyword))
-        # search_input = driver.find_element(By.XPATH, '//input[@placeholder="Search"]')
-        # search_input.send_keys(keyword)
-        # search_input.send_keys(Keys.RETURN)
-        # sleep(4)
-        # find_jobs_button(driver)
-    except BaseException:
-        input("Press enter after looking up jobs: ")
-        pass
 
 def extract_job_data(web_element: WebElement, driver: WebDriver):
     # Click to open right-side card
@@ -58,12 +15,12 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
         {
             'card': 'company_name',
             'by': By.XPATH,
-            'search_string': '//a[@class="ember-view t-black t-normal"]',
+            'search_string': '//a[@data-tracking-control-name="public_jobs_topcard-org-name"]',
         },
         {
             'card': 'job_title',
             'by': By.XPATH,
-            'search_string': '//h2[@class="t-24 t-bold jobs-unified-top-card__job-title"]',
+            'search_string': '//h2[@class="top-card-layout__title font-sans text-lg papabear:text-xl font-bold leading-open text-color-text mb-0 topcard__title"]',
         },
         {
             'card': 'salary',
@@ -73,12 +30,12 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
         {
             'card': 'location',
             'by': By.XPATH,
-            'search_string': '//span[@class="jobs-unified-top-card__workplace-type"]',
+            'search_string': '//span[@class="topcard__flavor topcard__flavor--bullet"]',
         },
         {
             'card': 'apply',
             'by': By.XPATH,
-            'search_string': '//button[@class="jobs-apply-button artdeco-button artdeco-button--icon-right artdeco-button--3 artdeco-button--primary ember-view"]',
+            'search_string': '//button[@class="sign-up-modal__outlet top-card-layout__cta mt-2 ml-1.5 h-auto babybear:flex-auto top-card-layout__cta--primary btn-md btn-primary"]',
         },
     ]
 
@@ -89,7 +46,12 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
             if card['card'] == 'apply':
                 apply_button = web_element.find_element(card['by'], card['search_string'])
                 apply_button.click()
-                sleep(5)
+                sleep(2)
+
+                # Deal with 'sign up' popup
+                x_button_popup = driver.find_element(By.XPATH, '//button[@data-tracking-control-name="public_jobs_apply-link-offsite_sign-up-modal_modal_dismiss"]')
+                x_button_popup.click()
+                sleep(3)
 
                 # Get link from newly open window, then close it.
                 driver.switch_to.window(driver.window_handles[1])

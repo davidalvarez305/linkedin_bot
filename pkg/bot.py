@@ -58,6 +58,7 @@ class Bot:
         try:
             # Initialize Driver
             self.driver = webdriver.Firefox()
+
             self.driver.get(f"https://www.linkedin.com/jobs/search/?f_E=2%2C3&f_WT=2&keywords={quote(keyword)}")
 
             i = 500
@@ -82,12 +83,9 @@ class Bot:
                 jobs_container = self.driver.find_element(By.CLASS_NAME, 'jobs-search__results-list')
                 jobs = jobs_container.find_elements(By.TAG_NAME, 'li')
 
-                for job in jobs:
-                    
-                    # Only the links with the following attribute are job listings -> so if it's not found, skip
-                    if job.get_attribute('data-occludable-job-id') is None:
-                        continue
+                print(f'{len(jobs)} jobs were found.')
 
+                for job in jobs:
                     try:
                         job_data = extract_job_data(web_element=job, driver=self.driver)
                         self.jobs.append(job_data)
