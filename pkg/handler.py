@@ -70,18 +70,6 @@ class Handler:
             enter_login(self.bot.driver, '//button[@data-automation-id="createAccountSubmitButton"]', self.bot.data)
             input("Verify email and come back: ")
 
-            print('Back to sign in screen...')
-            # Return to Sign In Screen
-            click_hidden_button(self.bot.driver, '//button[@data-automation-id="signInLink"]')
-
-            # Submit & Verify Email -- Then Login
-            enter_login(self.bot.driver, '//button[@data-automation-id="signInSubmitButton"]', self.bot.data)
-            sleep(5)
-
-            # Apply Manually
-            click_hidden_button(self.bot.driver, '//*[@data-automation-id="applyManually"]')
-            sleep(5)
-
             # Enter Fields
             handle_inputs(self.bot.driver, self.bot.data)
 

@@ -6,13 +6,21 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 from ..list import NO_APPLICATION_QUESTIONS, YES_APPLICATION_QUESTIONS
 
+def custom_error_handler(err):
+    std_input = input('Handle the error and press enter to continue. Otherwise, press 1 to restart: ').strip()
+
+    if std_input == "1":
+        raise Exception('Restarting handling of workdayjobs from scratch.')
+    else:
+        print(err)
+
 def click_hidden_button(driver, btn_xpath):
     try:
         submit_button = driver.find_element(By.XPATH, btn_xpath)
         actions = ActionChains(driver=driver)
         actions.move_to_element(submit_button).click().perform()
     except BaseException as err:
-        raise Exception(f'Error trying to create submit button: {err}')
+        custom_error_handler(err)
 
 
 def enter_login(driver, btn_xpath, data):
@@ -56,8 +64,7 @@ def enter_login(driver, btn_xpath, data):
             raise Exception('Application for this job listing has already happened.')
 
     except BaseException as err:
-        print("Error: ", err)
-        raise Exception('Error trying to login into WorkDayJobs.')
+        custom_error_handler(err)
 
 def select_options(driver, attr, input_id):
     try:
@@ -81,7 +88,7 @@ def select_options(driver, attr, input_id):
                     el.click()
                     break
     except BaseException as err:
-        raise Exception(f'Error selecting options: {err}')
+        custom_error_handler(err)
 
 
 def handle_multiple_input(driver, element, skills):
@@ -105,14 +112,14 @@ def handle_multiple_input(driver, element, skills):
                 if selected == "":
                     element.send_keys(Keys.CLEAR)
     except BaseException as err:
-        raise Exception(f'Error handling multiple input: {err}')
+        custom_error_handler(err)
 
 def input_field(element, user_data):
     try:
         if element.get_attribute('value') == "":
             element.send_keys(user_data)
     except BaseException as err:
-        raise Exception(f'Error during input_field : {err}')
+        custom_error_handler(err)
 
 def handle_inputs(driver, data):
     elements = driver.find_elements(By.TAG_NAME, 'input')
@@ -138,7 +145,7 @@ def handle_inputs(driver, data):
                     if label == "Name":
                         input_field(el, 'David Alvarez')
                     if "Address Line 1" in label:
-                        input_field(el, data['address'])
+                        input_field(el, data['addressLineOne'])
                     if "City" in label:
                         input_field(el, data['companyLocation'])
                     if "Postal Code" in label:
@@ -214,7 +221,7 @@ def get_correct_year(driver, data):
             current_year = driver.find_element(By.XPATH, '//*[@data-automation-id="monthPickerSpinnerLabel"]').get_attribute('innerText')
             year = current_year
     except BaseException as err:
-        raise Exception(f'Error getting correct year: {err}')
+        custom_error_handler(err)
 
 def click_save_and_continue(driver):
     try:
@@ -226,7 +233,7 @@ def click_save_and_continue(driver):
         if len(error) > 0:
             input("Handle the error & press enter.")
     except BaseException as err:
-        raise Exception(f'Error while trying to save: {err}')
+        custom_error_handler(err)
 
 def perform_action(driver, xpath, action, *args, **kwargs):
     try:
@@ -239,7 +246,7 @@ def perform_action(driver, xpath, action, *args, **kwargs):
             element.send_keys(keys)
 
     except BaseException as err:
-        raise Exception(f'Error while trying to perform action - {action}: {err}')
+        custom_error_handler(err)
 
 def click_add_fields(driver):
     add_btns = driver.find_elements(By.XPATH, '//*[@data-automation-id="Add"]')
