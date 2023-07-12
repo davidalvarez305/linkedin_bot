@@ -11,11 +11,16 @@ def upload_smartrecruiters_resume(driver, data):
     sleep(5)
 
 def handle_smartrecruiters(driver, data, values):
+    print('Handling smartrecruiters...')
     sleep(1)
 
     try:
         # Delete Resume Fields
         field_options = driver.find_elements(By.XPATH, '//button[@aria-label="See options"]')
+
+        if len(field_options) == 0:
+            raise Exception('No field options found.')
+
         for option in field_options:
             option.click()
 
@@ -28,6 +33,9 @@ def handle_smartrecruiters(driver, data, values):
             yes_button.click()
 
         sections = driver.find_elements(By.CLASS_NAME, 'form-section')
+
+        if len(sections) == 0:
+            raise Exception('No sections found.')
 
         for section in sections:
             section_header = section.find_element(By.TAG_NAME, 'h3').get_attribute('innerText')
@@ -74,6 +82,9 @@ def handle_smartrecruiters(driver, data, values):
                 button.click()
 
                 form_fields = section.find_elements(By.CLASS_NAME, 'form-control')
+
+                if len(form_fields) == 0:
+                    raise Exception('No form fields found.')
 
                 for field in form_fields:
                     label = field.find_element(By.TAG_NAME, 'label').get_attribute('innerText')
