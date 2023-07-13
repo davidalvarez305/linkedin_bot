@@ -250,6 +250,7 @@ class Handler:
                     print(f'Error: {err}')
                     continue
             
+            # Handle remaining generic fields
             parser.handle_fields()
         except BaseException as err:
             raise Exception(f'Failed to handle SmartRecruiters: {err}')
