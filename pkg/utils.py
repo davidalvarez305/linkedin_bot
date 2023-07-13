@@ -76,9 +76,9 @@ def handle_smart_autocomplete_fields(input, user_data):
     input.send_keys(Keys.RETURN)
 
 def handle_calendar_select(driver, user_data):
-    elements = driver.find_elements(By.CLASS_NAME, 'mat-calendar-body-cell-content')
+    elements = driver.find_elements(By.CSS_SELECTOR, 'div.mat-calendar-body-cell-content.mat-focus-indicator')
     for el in elements:
-        if user_data in el.get_attribute('textContent'):
+        if str(user_data) in el.get_attribute('textContent'):
             el.click()
             return
 

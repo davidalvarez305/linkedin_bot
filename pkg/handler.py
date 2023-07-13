@@ -231,17 +231,17 @@ class Handler:
                                 input_element = field.find_element(By.TAG_NAME, 'textarea')
                                 handle_smart_autocomplete_fields(input_element, self.bot.data['degreeDescription'])
                             if "From" in label:
-                                work_here = field.find_element(By.XPATH, '//*[@data-test="education-current"]')
-                                work_here.click()
+                                currently_attend = field.find_element(By.XPATH, '//*[@data-test="education-current"]')
+                                currently_attend.click()
                                 
                                 calendar_button = field.find_element(By.XPATH, '//button[@aria-label="Open calendar"]')
                                 calendar_button.click()
 
                                 # Select Year
-                                handle_calendar_select(self.bot.driver, self.bot.data['universityStartDate'])
+                                handle_calendar_select(self.bot.driver, self.bot.data['universityStartYear'])
                                 
                                 # Select Month
-                                handle_calendar_select(self.bot.driver, self.bot.data['universityEndDate'])
+                                handle_calendar_select(self.bot.driver, self.bot.data['universityStartMonth'])
 
                                 # Save
                                 save_button = field.find_element(By.XPATH, '//button[@data-test="education-save"]')
