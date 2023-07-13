@@ -36,7 +36,7 @@ class Handler:
                     resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
                     resume_upload.send_keys(os.path.join(Path(__file__).parent.parent, self.bot.data['resume']))
                     sleep(5)
-                    self.handle_smartrecruiters()
+                    self.handle_smartrecruiters(parser=parser)
                     return
                 elif "underdog.io" in job.get('apply'):
                     self.handle_underdog_fields()
@@ -133,7 +133,7 @@ class Handler:
         except BaseException as err:
             raise(f'Failed to handle WorkDayJobs: {err}')
     
-    def handle_smartrecruiters(self):
+    def handle_smartrecruiters(self, parser):
         print('Handling smartrecruiters...')
         sleep(1)
 
@@ -249,6 +249,8 @@ class Handler:
                 except BaseException as err:
                     print(f'Error: {err}')
                     continue
+            
+            parser.handle_fields()
         except BaseException as err:
             raise Exception(f'Failed to handle SmartRecruiters: {err}')
     
