@@ -156,6 +156,8 @@ class Handler:
 
             if len(sections) == 0:
                 raise Exception('No sections found.')
+            
+            # What I need to do here is click all of the "Add" buttons, then handle the form inputs as I do with the "generic handler." #
 
             for section in sections:
                 try:
