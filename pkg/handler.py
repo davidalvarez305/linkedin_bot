@@ -195,6 +195,7 @@ class Handler:
 
                                     # Select Year
                                     handle_calendar_select(self.bot.driver, self.bot.data['jobStartYear'])
+
                                     # Select Month
                                     handle_calendar_select(self.bot.driver, self.bot.data['jobStartMonth'])
 
