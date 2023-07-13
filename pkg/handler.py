@@ -1,3 +1,4 @@
+import os
 from time import sleep
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
@@ -32,7 +33,7 @@ class Handler:
                     return
                 elif "smartrecruiters" in job.get('apply'):
                     resume_upload = self.bot.driver.find_element(By.XPATH, '//input[@class="file-upload-input"]')
-                    resume_upload.send_keys(self.bot.data['resume'])
+                    resume_upload.send_keys(os.path.join(os.path.dirname(os.path.abspath('./linkedin_bot')), self.bot.data['resume']))
                     sleep(5)
                     self.handle_smartrecruiters()
                     return
@@ -132,11 +133,13 @@ class Handler:
             raise(f'Failed to handle WorkDayJobs: {err}')
     
     def handle_smartrecruiters(self):
+        print('Handling smartrecruiters...')
         sleep(1)
 
         try:
             # Delete Resume Fields
             field_options = self.bot.driver.find_elements(By.XPATH, '//button[@aria-label="See options"]')
+
             for option in field_options:
                 option.click()
 
@@ -231,8 +234,7 @@ class Handler:
                             save_button = field.find_element(By.XPATH, '//button[@data-test="education-save"]')
                             save_button.click()
         except BaseException as err:
-            print(err)
-            pass
+            raise Exception(f'Failed to handle SmartRecruiters: {err}')
     
     def handle_bamboo(self):
         try:
@@ -352,7 +354,7 @@ class Handler:
                         if "first" in field_name.lower():
                             element.send_keys(self.bot.data['firstName'])
                         if "resume" in field_name.lower():
-                            element.send_keys(self.bot.data['resume'])
+                            element.send_keys(os.path.dirname(os.path.abspath(__file__)), os.path.join(self.bot.data['resume']))
                         if "last" in field_name.lower():
                             element.send_keys(self.bot.data['lastName'])
                         if "email" in field_name.lower():

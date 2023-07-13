@@ -2,4 +2,5 @@
 *.log
 *.json
 *.pdf
+*.docx
 __pycache__
