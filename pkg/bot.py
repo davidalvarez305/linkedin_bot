@@ -54,7 +54,6 @@ class Bot:
             raise Exception("Data from JSON file could not be loaded.")
 
     def crawl_jobs(self, keyword):
-
         try:
             # Initialize Driver
             self.driver = webdriver.Firefox()
@@ -85,6 +84,7 @@ class Bot:
 
                 print(f'{len(jobs)} jobs were found.')
 
+                index = 0
                 for job in jobs:
                     try:
                         job_data = extract_job_data(web_element=job, driver=self.driver)
@@ -92,8 +92,10 @@ class Bot:
                     except BaseException as err:
                         print("ERROR FINDING JOB: ", err)
                         continue
-            
-                self.save_jobs()
+                    finally:
+                        index += 1
+                        if index % 10 == 0:
+                            self.save_jobs()
 
                 # After jobs are saved in Google Sheets -> reset the list so that they're not saved twice
                 self.jobs = []
@@ -122,7 +124,6 @@ class Bot:
             except BaseException as err:
                 print("err: ", err)
                 continue
-        
         # self.driver.close()
 
     def save_jobs(self):
