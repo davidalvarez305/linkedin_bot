@@ -176,7 +176,7 @@ class Bot:
         jobs_to_save = []
         for this_job in self.jobs:
             if this_job.get('apply') == job.get('apply'):
-                this_job['applied'] == 'True'
+                this_job['applied'] = 'TRUE'
             
             job_data = []
             for header in rows[0]:
