@@ -50,11 +50,13 @@ class Handler:
                     parser.handle_fields()
                     return
             except BaseException as err:
-                print(err)
+                print('ERROR: ', err)
+            finally:
                 if self.is_completed() == True:
                     break
                 else:
                     continue
+
     
     def handle_workdayjobs(self):
         print('Handling workday jobs...')

@@ -54,7 +54,7 @@ class Parser:
             html_for = label.get_attribute('for')
             if html_for:
                 try:
-                    field['label'] = label.get_attribute('innerText')
+                    field['label'] = label.get_attribute('textContent')
                     field['id'] = label.get_attribute('for')
 
                     input_field = self.driver.find_element(By.ID, field['id'])
@@ -78,6 +78,7 @@ class Parser:
         print(f'{len(self.fields)} input fields found.')
 
         for field in self.fields:
+            print('FIELD: ', field)
             try:
                 # Handle Resume Upload
                 if field['tagName'] == 'BUTTON':
