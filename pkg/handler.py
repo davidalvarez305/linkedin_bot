@@ -24,6 +24,8 @@ class Handler:
     def handle_job(self, job, parser):
         while True:
             try:
+                if job.get('applied') == 'True':
+                    continue
                 if "workdayjobs" in job.get('apply'):
                     self.handle_workdayjobs()
                     return

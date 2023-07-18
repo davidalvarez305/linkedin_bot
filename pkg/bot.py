@@ -140,7 +140,7 @@ class Bot:
             for second_index, diff_job in enumerate(self.jobs):
 
                 # If the links match, and it's not the same index in the list
-                if job['apply'] == diff_job['apply'] and first_index != second_index:
+                if job.get('apply') == diff_job.get('apply') and first_index != second_index:
                     exists = True
 
             if not exists:
@@ -175,7 +175,7 @@ class Bot:
         
         jobs_to_save = []
         for this_job in self.jobs:
-            if this_job['apply'] == job['apply']:
+            if this_job.get('apply') == job.get('apply'):
                 this_job['applied'] == True
             
             job_data = []
