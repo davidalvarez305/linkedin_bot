@@ -3,7 +3,6 @@ from time import sleep
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from pkg.list import COMMON_QUESTIONS
-from pkg.sites.bamboo import handle_select_div
 from pkg.sites.greenhouse import handle_greenhouse_autocomplete, handle_hidden_field
 from pkg.sites.lever import find_lever_elements, handle_lever_fields
 from pkg.sites.underdog import auto_complete
@@ -254,42 +253,6 @@ class Handler:
             parser.handle_fields()
         except BaseException as err:
             raise Exception(f'Failed to handle SmartRecruiters: {err}')
-    
-    def handle_bamboo(self):
-        try:
-            elements = self.bot.driver.find_elements(By.CLASS_NAME, "CandidateForm__row")
-
-            for element in elements:
-                field_name = element.find_element(By.TAG_NAME, "label").get_attribute('innerText')
-
-                # Handle Radiobuttons
-                if "Veteran" in field_name:
-                    btns = self.bot.driver.find_elements(By.XPATH, '//*[@type="radio"]')
-                    for btn in btns:
-                        label = btn.find_element(By.XPATH, '../label').get_attribute('innerText')
-                        if self.bot.data['veteranStatus'].lower() in label.lower():
-                            btn.click()
-
-                # Handle Selects
-                if "Gender" in field_name:
-                    element.click()
-                    handle_select_div(self.bot.driver, self.bot.data['gender'])
-                elif "Disability" in field_name:
-                    element.click()
-                    handle_select_div(self.bot.driver, self.bot.data['disabilityStatus'])
-                elif "Ethnicity" in field_name:
-                    element.click()
-                    handle_select_div(self.bot.driver, self.bot.data['race'])
-
-                # Handle Inputs
-                else:
-                    for question in COMMON_QUESTIONS:
-                        if question['question'].lower() in field_name.lower():
-                            field = question['data']
-                            handle_textarea(element, self.bot.data[f"{field}"])
-        except BaseException as err:
-            print(err)
-            pass
 
     def handle_underdog_fields(self):
         print('Handling underdog...')
