@@ -122,7 +122,7 @@ class Bot:
                     self.driver.get(job.get('apply'))
                     handler.handle_job(job=job, parser=parser)
             except BaseException as err:
-                print("err: ", err)
+                print("ERROR APPLYING TO JOBS: ", err)
                 continue
 
     def save_jobs(self):
@@ -168,21 +168,25 @@ class Bot:
             self.keywords.append(keyword[0])
 
     def mark_applied(self, job):
-        rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('JOBS_TAB')}!A:F")
+        try:
+            rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('JOBS_TAB')}!A:F")
 
-        if job is None:
-            raise Exception("No job passed as parameter.")
-        
-        jobs_to_save = []
-        for this_job in self.jobs:
-            if this_job.get('apply') == job.get('apply'):
-                this_job['applied'] = 'TRUE'
+            if job is None:
+                raise Exception("No job passed as parameter.")
             
-            job_data = []
-            for header in rows[0]:
-                job_data.append(this_job[header])
+            jobs_to_save = []
+            for this_job in self.jobs:
+                if this_job.get('apply') == job.get('apply'):
+                    this_job['applied'] = 'TRUE'
+                
+                job_data = []
+                for header in rows[0]:
+                    job_data.append(this_job[header])
+                
+                jobs_to_save.append(job_data)
             
-            jobs_to_save.append(job_data)
-        
-        rows = jobs_to_save
-        write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:F", values=rows)
+            rows = jobs_to_save
+            write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:F", values=rows)
+        except BaseException as err:
+            print('ERROR MARKETING APPLIED: ', err)
+            raise Exception(err)

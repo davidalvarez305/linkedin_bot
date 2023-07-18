@@ -76,4 +76,6 @@ def extract_job_data(web_element: WebElement, driver: WebDriver):
             if job_data.get(card['card']) == None:
                 job_data[card['card']] = ""
 
+    job_data['applied'] = 'FALSE'
+
     return job_data
