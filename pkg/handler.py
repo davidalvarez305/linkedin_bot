@@ -53,6 +53,7 @@ class Handler:
                 print('ERROR: ', err)
             finally:
                 if self.is_completed() == True:
+                    self.bot.mark_applied(job=job)
                     break
                 else:
                     continue

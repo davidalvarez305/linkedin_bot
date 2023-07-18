@@ -124,25 +124,35 @@ class Bot:
             except BaseException as err:
                 print("err: ", err)
                 continue
-        # self.driver.close()
 
     def save_jobs(self):
-        rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('JOBS_TAB')}!A:E")
+        rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('JOBS_TAB')}!A:F")
         headers = rows[0]
 
         jobs = []
-        for job in self.jobs:
+        for first_index, job in enumerate(self.jobs):
+            exists = False
             job_data = []
             for header in headers:
                 job_data.append(job[header])
+        
+            # Find if job exists already
+            for second_index, diff_job in enumerate(self.jobs):
 
-            jobs.append(job_data)
+                # If the links match, and it's not the same index in the list
+                if job['apply'] == diff_job['apply'] and first_index != second_index:
+                    exists = True
+
+            if not exists:
+                jobs.append(job_data)
+
+            exists = False
         rows += jobs
 
-        write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:E", values=rows)
+        write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:F", values=rows)
 
     def get_jobs_from_sheets(self):
-        rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:E")
+        rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:F")
         headers = rows[0]
 
         for job in rows[1:]:
@@ -156,3 +166,16 @@ class Bot:
         rows = get_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('KEYWORDS_TAB')}!A:A")
         for keyword in rows[1:]:
             self.keywords.append(keyword[0])
+
+    def mark_applied(self, job):
+        rows = get_values(os.environ.get('SHEETS_ID'), f"{os.environ.get('JOBS_TAB')}!A:F")
+
+        if job is None:
+            raise Exception("No job passed as parameter.")
+        
+        for this_job in self.jobs:
+            if this_job['apply'] == job['apply']:
+                this_job['applied'] == True
+        
+        rows += self.jobs
+        write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:F", values=rows)
