@@ -173,9 +173,16 @@ class Bot:
         if job is None:
             raise Exception("No job passed as parameter.")
         
+        jobs_to_save = []
         for this_job in self.jobs:
             if this_job['apply'] == job['apply']:
                 this_job['applied'] == True
+            
+            job_data = []
+            for header in rows[0]:
+                job_data.append(this_job[header])
+            
+            jobs_to_save.append(job_data)
         
-        rows += self.jobs
+        rows = jobs_to_save
         write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:F", values=rows)
