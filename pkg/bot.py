@@ -185,7 +185,9 @@ class Bot:
                 
                 jobs_to_save.append(job_data)
             
-            rows = jobs_to_save
+            headers = rows[0]
+            rows = [headers]
+            rows += jobs_to_save
             write_values(spreadsheet_id=os.environ.get('SHEETS_ID'), range=f"{os.environ.get('JOBS_TAB')}!A:F", values=rows)
         except BaseException as err:
             print('ERROR MARKETING APPLIED: ', err)
