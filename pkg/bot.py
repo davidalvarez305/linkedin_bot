@@ -118,7 +118,7 @@ class Bot:
             # Initialie a new parser for every new job. The parser will keep program state for the fields.
             parser = Parser(questions=self.questions, data=self.data, driver=self.driver)
             try:
-                if job.get('apply') is not None:
+                if job.get('apply') is not None and job.get('applied') != 'TRUE':
                     self.driver.get(job.get('apply'))
                     handler.handle_job(job=job, parser=parser)
             except BaseException as err:

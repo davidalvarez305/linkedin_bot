@@ -23,8 +23,6 @@ class Handler:
     
     def handle_job(self, job, parser):
         while True:
-            if job.get('applied') == 'TRUE':
-                break
             try:
                 if "workdayjobs" in job.get('apply'):
                     self.handle_workdayjobs()
